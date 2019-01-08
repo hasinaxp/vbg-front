@@ -1,0 +1,27 @@
+
+.NavProfileCard {
+    position: relative;
+}
+
+.NavProfileCard div:nth-child(1) {
+    height: 180px;
+    overflow: hidden;
+    clip-path: polygon(100% 0, 100% 78%, 80% 91%, 0 38%, 0 0, 46% 0);
+}
+.NavProfileCard div:nth-child(2) {
+    position: absolute;
+    top: 100px;
+    left:20px;
+}
+
+.NavProfileCard img {
+   max-width: 260px;
+   margin-top: -50px;
+   filter: blur(3px);
+}
+.NavProfileCard h2 {
+    margin-bottom: -2px;
+    padding-bottom: 2px;
+}
+.NavProfileCard span {
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 384 384" style="enable-background:new 0 0 384 384;" xml:space="preserve">
+<defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#76ff03;stop-opacity:1" />
+	  <stop offset="30%" style="stop-color:#76ff03;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00e5ff;stop-opacity:1" />
+    </linearGradient>
+</defs>
+<g >
+	<g>
+		<g>
+			<g>
+				<rect x="213.333" y="0" width="170.667" height="128" fill="#76ff03"/>
+				<rect x="0" y="0" width="170.667" height="213.333" fill="#76ff03" />
+				<rect x="0" y="256" width="170.667" height="128" fill="#00e5ff"/>
+				<rect x="213.333" y="170.667" width="170.667" height="213.333" fill="url(#grad1)"/>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>

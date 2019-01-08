@@ -1,0 +1,231 @@
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+.body-a { 
+  margin:0;
+  padding:0;
+	perspective: 1px;
+	transform-style: preserve-3d;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-family: Nunito;
+}
+
+p {
+  font-size: 140%;
+  line-height: 150%;
+  color: #333;
+}
+
+.slide {
+  position: relative;
+  padding: 25vh 10%;
+  min-height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  box-shadow: 0 -1px 10px rgba(0, 0, 0, .7);
+	transform-style: inherit;
+}
+
+#slide2 img {
+  position: absolute;
+  top: 50%;
+  left: 35%;
+  width: 320px;
+  height: 240px;
+  transform: translateZ(.25px) scale(.75) translateX(-94%) translateY(-100%) rotate(2deg);
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(158, 255, 2, 0.7);
+  box-shadow: 0 0 8px rgba(0, 0, 0, .7);
+}
+
+#slide2 img:last-of-type {
+  transform: translateZ(.4px) scale(.6) translateX(-104%) translateY(-40%) rotate(-5deg);
+}
+
+.slide:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 8px 1px rgba(0, 0, 0, .7);
+}
+
+.title {
+  width: 50%;
+  padding: 5%;
+  border-radius: 5px;
+  background: rgba(19, 19, 19, 0.7);
+  box-shadow: 0 0 8px rgba(0, 0, 0, .7);
+}
+.title-x{
+
+}
+.title-x h1{
+    color: #76ff03;
+}
+.title-x p{
+  color: #aaa;  
+}
+.title-y{
+    background: rgba(19, 19, 19, 0.7);
+    padding:10px;
+    margin: 8px;
+}
+.title-y h1{
+    color: #76ff03;
+    padding:10px;
+}
+.title-y p{
+  color: #aaa;
+  padding:10px;
+}
+.title h1{
+    color: #76ff03;
+}
+.title p{
+  color: #aaa;  
+}
+
+
+
+.slide:nth-child(2n) .title {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.slide:nth-child(2n+1) .title {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.slide, .slide:before {
+  background: 50% 50% / cover;  
+}
+
+.header {
+  text-align: center;
+  font-size: 175%;
+  color: #fff;
+  text-shadow: 0 2px 2px #000;
+}
+
+#title {
+  background-image: url(../img/shot_1.jpg);
+  z-index:2;
+}
+
+#title div {
+ transform-origin: 50% 0%;
+ margin-top: 4%;
+
+}
+#title div h1{
+    transform: translateZ(0.3px) scale(0.8);
+    transform-origin: 50% 0%;
+    margin-top: 4%;
+   
+   }
+
+#slide1 {
+    background: #222;
+  transform: translateZ(-1px) scale(2);
+}
+
+#slide2 {
+  background-image: url(https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2018/03/15/105067468-Screen-Shot-2018-03-15-at-8.46.23-AM.1910x1000.jpg);
+  z-index:2;
+}
+
+#slide3{
+  background-image: url(../img/shot_2.jpg);
+  transform: translateZ(-1px) scale(2);
+}
+
+#slide4 {
+  background: #222;
+}
+.boton {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 24px;
+    font-weight: bolder;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    text-shadow: 0px 0px 16px black;
+}
+.boton span {
+     width: 100%;
+     position: absolute;
+     top:15px;
+     left:0;
+ }
+
+.boton svg line {
+    stroke-width: 6;
+    stroke: #fff;
+    fill: none;
+
+    -webkit-transition: all 600ms ease-in-out;
+    -moz-transition: all 600ms ease-in-out;
+    -ms-transition: all 600ms ease-in-out;
+    -o-transition: all 600ms ease-in-out;
+    transition: all 600ms ease-in-out;
+}
+.boton:hover svg line {
+    stroke: #76ff03;
+}
+ 
+.boton:hover svg line.L-T {
+  -webkit-transform: translateY(50px);
+  transform: translateY(50px);
+}
+.boton:hover svg line.L-B {
+  -webkit-transform: translateY(-50px);
+  transform: translateY(-50px);
+}
+div.boton:hover svg line.R-T {
+  -webkit-transform: translateY(50px);
+  transform: translateY(50px);
+}
+.boton:hover svg line.R-B {
+  -webkit-transform: translateY(-50px);
+  transform: translateY(-50px);
+}
+.boton:hover svg line.T-L {
+  -webkit-transform: translateX(270px);
+  transform: translateX(270px);
+}
+.boton:hover svg line.T-R {
+  -webkit-transform: translateX(-270px);
+  transform: translateX(-270px);
+}
+.boton:hover svg line.B-L {
+  -webkit-transform: translateX(270px);
+  transform: translateX(270px);
+}
+.boton:hover svg line.B-R {
+  -webkit-transform: translateX(-270px);
+  transform: translateX(-270px);
+}
+
+
+@media screen and (max-width: 600px) {
+    .title {
+        width: 100%;
+        color:red;
+      }
+      #slide2 img {
+          display: none;
+      }
+}

@@ -1,0 +1,86 @@
+
+@VBG - BACKEND
+//-----------------rules------------------//
+
+0. data should be sent populated, authentication must be called in case of client
+1. all api calls should start with api
+2. data of the calling user should be taken from the authentication as {req.data._user}
+3. api calls should never contain any data as param, if such please make that a datafield
+4. apis will be seperate in 2 parts -> api/admin, api/client
+5. socket apis will contain !!
+6. api paths should go as the indentation till the last ':'
+   i.e. api/admin/game/add
+7. general form of representation:
+   (datafield_1, datafield_2?condition, datafield_3|type ....) => output_1, output_2<fieldnames>?condition
+8. if any issue in understanding the presentation mail me at: chocoboyxp@gmail.com
+9. keep believe in the potential of mankind
+
+//-----------------apis------------------//
+---------
+| admin |====================================
+---------
+|-game:
+|    |-add:(game: <name, image, platform, requirement>) => confirmation
+|    |-remove:(game_id) => confirmation
+|    |-change_image: (game_id) => confirmation
+|
+|-feed:
+|    |-add:(feed: <heading, image, html) => confirmation
+|    |-remove:(game_id) => confirmation
+|
+|-tournament:
+|    |-add:(tournament: <game, banner_image?optional, player_count, rule_list, details<object> >) => confirmation
+|    |-remove:(game_id) => confirmation
+|
+|-data:() => game_list, feed_list, disput_match_list, tournament_list
+|-decide:
+    |-data: (match_id)=>match<schema>
+    |-make_winner: (match_id, user_id)=> confirmation
+
+---------
+| client |====================================
+---------
+|-sign:
+|    |-login: normal/fb/google => user_data < _id, email, connection_string, ... >
+|    |-logout: () => reset connection_string
+|
+|-dashboard:
+|    |-game:
+|    |    |-data: () => game_list_all<_id, name, image, platform, requirement>
+|    |    |-add: (game_id, contact_string) =>  user.games.push() => confirmation
+|    |    |-remove: (game_id) => user.games.pop() => confirmation
+|    |    |-update: (game_id, contact_string) =>  user.games.update(contact_string) => confirmation
+|    |-data: () => user_game_list<...>,
+|    |              user_challenge_List<_id, challenger, challenged, bet, game>?time-> ascending (stage: 0)
+|    |              user_match_list<...>,?is_tournament (stage: 1)
+|    |              feed_list
+|    |-search: (game_id, text)=> users_list<game>? sorted-> last_login
+|    |-challenge: (game_id, user_id, bet) => confirmation
+|                :cancel -> matches.pop()
+|                :accept -> match.state = 1 => confirmation ? if not possible error code
+|
+|-match:
+|    |-data:() => match.populate<challenger, challenged, game, bet, date, ...>
+|    |-chat!!
+|    |-admit_defeat: () => consfirmation
+|    |-claim_victory: (image) => consfirmation
+|    |-admin_request: () =>confirmation
+|
+|-profile:
+|    |-data: (user_id) => user<schema>? full populated
+|    |                   user_levelDetails, 
+|    |                   user_achievement_list, 
+|    |                   unachieved_list
+|    |-update:
+|        |-name:(name)=> confirmation
+|        |-phone: (phone)=> confirmation
+|        |-image: (image)=> confirmation
+|        |-password: (old_password, new_password)=> confirmation
+|
+|-log:
+    |-balance:? this is known as wallet
+    |    data:
+    |    add:
+    |    withdraw:
+    |-history:? this is known as log
+        data:
