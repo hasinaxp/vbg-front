@@ -1,5 +1,5 @@
 const colors = {
-    blackLight: '#303643',
+    blackLight: '#334',
     greenLight: '#76ff03',
     green: '#aaa',
 }
@@ -74,7 +74,7 @@ export const  MainStyles = {
         transform: 'scale(1.2)'
     },
     gridList: {
-        maxWidth: 500,
+        minWidth: 500,
         maxHeight: 450,
     },
     centerContainer: {
@@ -84,6 +84,6 @@ export const  MainStyles = {
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column'
-    }
+    },
 }
 

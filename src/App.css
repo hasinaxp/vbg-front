@@ -22,3 +22,37 @@
   background-attachment: fixed;
   min-height: 100vh;
 }
+.msgBubble{
+  position:relative;
+	padding:10px 20px;
+	background:#bbbbbb22;
+	border-radius:2px;
+	color: black;
+  float: left;
+  margin-left: 8px;
+  color: #bbb;
+  width: 70%;
+}
+.msgBubble:before {
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:-10px;
+  height:20px;
+  width: 0; 
+  height: 0; 
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent; 
+  border-right:10px solid #bbbbbb22;
+}
+
+#tournamentBracket {
+
+}
+#tournamentBracket .title{
+  color: #aaa;
+}
+#tournamentBracket .player{
+  overflow: hidden;
+  color: #eee;
+}

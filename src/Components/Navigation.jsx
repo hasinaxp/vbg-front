@@ -7,14 +7,18 @@ import { JsonQueryAuth, HostAddress, getCookie } from '../Services/Query'
 import { AppBar, Toolbar } from '@material-ui/core';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Icon } from '@material-ui/core';
 import { IconButton } from '@material-ui/core'
-import { Sort, Dashboard, Person, AccountBalanceWallet } from '@material-ui/icons';
+import { Sort, Dashboard, Person, AccountBalanceWallet, FeaturedPlayListTwoTone } from '@material-ui/icons';
 import { Grid, Typography, Fab, Button } from '@material-ui/core';
 import { GridList, GridListTile, GridListTileBar } from '@material-ui/core';
 import { TextField, Avatar, MenuItem } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent } from '@material-ui/core';
+import Slide from '@material-ui/core/Slide';
 
 import styles from './Navigation.module.css';
 
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 
 const ChallengeBets = [
     { text: 'Free', value: 0 },
@@ -24,7 +28,6 @@ const ChallengeBets = [
     { text: '100 BP', value: 100 },
     { text: '500 BP', value: 500 },
 ]
-
 
 
 const Logo = () =>
@@ -40,6 +43,7 @@ export class Navigation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showGameBtn : false, 
             isOpen: false,
             image: require('../img/default.jpg'),
             name: 'palyer',
@@ -61,7 +65,8 @@ export class Navigation extends Component {
         this.setState({
             name: name,
             image: image,
-            balance: balance
+            balance: balance,
+            showGameBtn : this.props.active !== 'wallet' && this.props.active !== 'history'
         })
     }
     componentDidMount() {
@@ -80,7 +85,9 @@ export class Navigation extends Component {
                         </IconButton>
                         <Logo />
                     </Toolbar>
-                    <GameBtn load={this.props.load}/>
+                    {
+                        this.state.showGameBtn? <GameBtn load={this.props.load} /> : ''
+                    }
                 </AppBar>
                 <Drawer open={this.state.isOpen} onClose={this.toggleDrawer}>
                     <SideMenu
@@ -105,32 +112,32 @@ class GameBtn extends Component {
             nameHint: '',
             bet: 0,
             games: [],
-            game : '',
+            game: '',
             opponents: [],
-            opponent : {
-                _id : '',
-                name : '',
-                image : require('../img/default.jpg')
+            opponent: {
+                _id: '',
+                name: '',
+                image: require('../img/default.jpg')
             },
-            self :  {
-                _id : '',
-                name : '',
-                image : require('../img/default.jpg')
-            } 
+            self: {
+                _id: '',
+                name: '',
+                image: require('../img/default.jpg')
+            }
         }
         this.toggleChallenge = this.toggleChallenge.bind(this);
     }
     toggleChallenge() {
         this.setState({
             isOpen: !this.state.isOpen,
-            stage : 'game'
+            stage: 'game'
         })
     }
-    handleChange = name =>async event => {
+    handleChange = name => async event => {
         this.setState({
             [name]: event.target.value,
         });
-        if(name === 'nameHint') {
+        if (name === 'nameHint') {
             this.search(event.target.value)
         }
     }
@@ -142,7 +149,7 @@ class GameBtn extends Component {
     }
     search = async (name) => {
         const res = await JsonQueryAuth('POST', 'info/getChallangerList', { name: name, game_id: this.state.game })
-        const opponents =  res.list.filter(x => x._id !== getCookie('logauti'))
+        const opponents = res.list.filter(x => x._id !== getCookie('logauti'))
         this.setState({
             opponents: opponents,
             stage: 'search',
@@ -150,32 +157,32 @@ class GameBtn extends Component {
     }
     selectOpponent = id => async  e => {
         const res = await JsonQueryAuth('POST', 'info/getChallangerList', { name: this.state.nameHint, game_id: id })
-        const opponents =  res.list.filter(x => x._id !== getCookie('logauti'))
+        const opponents = res.list.filter(x => x._id !== getCookie('logauti'))
         this.setState({
             opponents: opponents,
-            self : res.list.filter(x => x._id === getCookie('logauti'))[0],
+            self: res.list.filter(x => x._id === getCookie('logauti'))[0],
             stage: 'search',
-            game : id
+            game: id
         })
     }
     openChallange = op => async e => {
         this.setState({
-            opponent : op,
+            opponent: op,
             stage: 'challenge'
         })
     }
     challenge = async e => {
-        const { opponent, bet, game, self} = this.state;
-        const res = await JsonQueryAuth('POST', 'dashboard/game/challange',{
+        const { opponent, bet, game, self } = this.state;
+        const res = await JsonQueryAuth('POST', 'dashboard/game/challange', {
             challenger: self._id,
             challenged: opponent._id,
             balance: bet,
             game_id: game
         });
-        if(res.status === 'ok') {
+        if (res.status === 'ok') {
             this.toggleChallenge();
             this.props.load()
-        }else {
+        } else {
             alert(res.errors[0]);
         }
     }
@@ -189,7 +196,7 @@ class GameBtn extends Component {
                         <GridList cellHeight={200} style={MainStyles.gridList}>
                             {this.state.games.map(g => (
                                 <GridListTile key={g._id} onClick={this.selectOpponent(g._id)} cols={window.innerWidth < 600 ? 2 : 1}>
-                                    <img src={`${HostAddress}gameimg/${g.image}`} alt={'data.name'}  />
+                                    <img src={`${HostAddress}gameimg/${g.image}`} alt={'data.name'} />
                                     <GridListTileBar
                                         title={g.name}
                                         subtitle={<span>Platform: {g.platform === 0 ? 'mobile' : 'PC'}</span>}
@@ -273,9 +280,9 @@ class GameBtn extends Component {
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} style={MainStyles.centerContainer}>
-                                <Button 
-                                style={{ color: 'green', marginTop: 30, width: '100%', padding: 20, fontSize: '1.3rem' }} 
-                                onClick={this.challenge}
+                                <Button
+                                    style={{ color: 'green', marginTop: 30, width: '100%', padding: 20, fontSize: '1.3rem' }}
+                                    onClick={this.challenge}
                                 >
                                     <i className="fas fa-gamepad"></i>{'\u00A0'}Challenge
                                 </Button>
@@ -290,10 +297,16 @@ class GameBtn extends Component {
                 <Fab style={{ backgroundColor: '#00c853' }} onClick={this.toggleChallenge}>
                     <img src={require('../img/icons/sword.svg')} alt="B" style={{ width: 30 }} />
                 </Fab>
-                <Dialog open={this.state.isOpen} onClose={this.toggleChallenge}>
+                <Dialog
+                    open={this.state.isOpen}
+                    onClose={this.toggleChallenge}
+                    TransitionComponent={Transition}
+                    keepMounted>
                     <DialogTitle>{dialogTitle}</DialogTitle>
                     <DialogContent>
-                        {dialogContent}
+                    <div>
+                    {dialogContent}
+                    </div>
                     </DialogContent>
                 </Dialog>
             </div>

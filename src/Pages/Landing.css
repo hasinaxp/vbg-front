@@ -16,13 +16,13 @@ html {
   font-family: Nunito;
 }
 
-p {
+.body-a p {
   font-size: 140%;
   line-height: 150%;
   color: #333;
 }
 
-.slide {
+.body-a .slide {
   position: relative;
   padding: 25vh 10%;
   min-height: 100vh;
@@ -32,7 +32,7 @@ p {
 	transform-style: inherit;
 }
 
-#slide2 img {
+.body-a #slide2 img {
   position: absolute;
   top: 50%;
   left: 35%;
@@ -45,11 +45,11 @@ p {
   box-shadow: 0 0 8px rgba(0, 0, 0, .7);
 }
 
-#slide2 img:last-of-type {
+.body-a #slide2 img:last-of-type {
   transform: translateZ(.4px) scale(.6) translateX(-104%) translateY(-40%) rotate(-5deg);
 }
 
-.slide:before {
+.body-a .slide:before {
   content: "";
   position: absolute;
   top: 0;
@@ -59,7 +59,7 @@ p {
   box-shadow: 0 0 8px 1px rgba(0, 0, 0, .7);
 }
 
-.title {
+.body-a .title {
   width: 50%;
   padding: 5%;
   border-radius: 5px;
@@ -88,59 +88,59 @@ p {
   color: #aaa;
   padding:10px;
 }
-.title h1{
+.body-a .title h1{
     color: #76ff03;
 }
-.title p{
+.body-a .title p{
   color: #aaa;  
 }
 
 
 
-.slide:nth-child(2n) .title {
+.body-a .slide:nth-child(2n) .title {
   margin-left: 0;
   margin-right: auto;
 }
 
-.slide:nth-child(2n+1) .title {
+.body-a .slide:nth-child(2n+1) .title {
   margin-left: auto;
   margin-right: 0;
 }
 
-.slide, .slide:before {
+.body-a .slide, .slide:before {
   background: 50% 50% / cover;  
 }
 
-.header {
+.body-a .header {
   text-align: center;
   font-size: 175%;
   color: #fff;
   text-shadow: 0 2px 2px #000;
 }
 
-#title {
+.body-a #title {
   background-image: url(../img/shot_1.jpg);
   z-index:2;
 }
 
-#title div {
+.body-a #title div {
  transform-origin: 50% 0%;
  margin-top: 4%;
 
 }
-#title div h1{
+.body-a #title div h1{
     transform: translateZ(0.3px) scale(0.8);
     transform-origin: 50% 0%;
     margin-top: 4%;
    
    }
 
-#slide1 {
+.body-a #slide1 {
     background: #222;
   transform: translateZ(-1px) scale(2);
 }
 
-#slide2 {
+.body-a #slide2 {
   background-image: url(https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2018/03/15/105067468-Screen-Shot-2018-03-15-at-8.46.23-AM.1910x1000.jpg);
   z-index:2;
 }

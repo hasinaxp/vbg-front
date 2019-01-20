@@ -21,6 +21,47 @@ export const JsonQuery = async (type, url, info) => {
     return json
 }
 
+export const PostQuery = async (url, body) => {
+    const settings = {
+        method: 'POST',
+        headers: {
+        },
+        credentials: 'same-origin',
+        body: body
+    };
+    const response = await fetch(`${HostAddress}api/${url}`, settings)
+    if (response.status != 200) {
+        console.log(`unable to query:${url}`)
+        return { status: 100 }
+    }
+    const json = await response.json()
+    return json
+}
+
+
+export const JsonQueryAdmin = async (type, url, info) => {
+    const settings = {
+        method: type,
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(info)
+    };
+
+    const response = await fetch(`${HostAddress}api/${url}`, settings)
+    if (response.status != 200) {
+        console.log(`unable to query:${url}`)
+        return { status: 100 }
+    }
+    const json = await response.json()
+    return json
+}
+
+
 export const JsonQueryAuth = async (type, url, info) => {
     const settings = {
         method: type,
@@ -35,6 +76,29 @@ export const JsonQueryAuth = async (type, url, info) => {
         },
         credentials: 'same-origin',
         body: JSON.stringify(info)
+    };
+
+    const response = await fetch(`${HostAddress}api/${url}`, settings)
+    if (response.status != 200) {
+        console.log(`unable to query:${url}`)
+        return { status: 100 }
+    }
+    const json = await response.json()
+    return json
+}
+
+export const PostQueryAuth = async ( url, body) => {
+    const settings = {
+        method: 'POST',
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache",
+        headers: {
+            'logautx' : `${getCookie('logautx')}`,
+            'logauty' : `${getCookie('logauty')}`,
+            'logauti' : `${getCookie('logauti')}`
+        },
+        credentials: 'same-origin',
+        body: body
     };
 
     const response = await fetch(`${HostAddress}api/${url}`, settings)
