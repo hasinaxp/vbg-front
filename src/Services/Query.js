@@ -10,10 +10,10 @@ export const JsonQuery = async (type, url, info) => {
         credentials: 'same-origin'
     };
 
-    if (type == 'post') settings.body = JSON.stringify(info)
+    if (type === 'post') settings.body = JSON.stringify(info)
 
     const response = await fetch(`${HostAddress}api/${url}`, settings)
-    if (response.status != 200) {
+    if (response.status !== 200) {
         console.log(`unable to query:${url}`)
         return { status: 100 }
     }
@@ -30,7 +30,7 @@ export const PostQuery = async (url, body) => {
         body: body
     };
     const response = await fetch(`${HostAddress}api/${url}`, settings)
-    if (response.status != 200) {
+    if (response.status !== 200) {
         console.log(`unable to query:${url}`)
         return { status: 100 }
     }
@@ -53,7 +53,7 @@ export const JsonQueryAdmin = async (type, url, info) => {
     };
 
     const response = await fetch(`${HostAddress}api/${url}`, settings)
-    if (response.status != 200) {
+    if (response.status !== 200) {
         console.log(`unable to query:${url}`)
         return { status: 100 }
     }
@@ -79,7 +79,7 @@ export const JsonQueryAuth = async (type, url, info) => {
     };
 
     const response = await fetch(`${HostAddress}api/${url}`, settings)
-    if (response.status != 200) {
+    if (response.status !== 200) {
         console.log(`unable to query:${url}`)
         return { status: 100 }
     }
@@ -102,7 +102,7 @@ export const PostQueryAuth = async ( url, body) => {
     };
 
     const response = await fetch(`${HostAddress}api/${url}`, settings)
-    if (response.status != 200) {
+    if (response.status !== 200) {
         console.log(`unable to query:${url}`)
         return { status: 100 }
     }

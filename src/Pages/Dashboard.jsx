@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from '../Components/MainStyles';
+import { MainStyles, myTheme } from '../Components/MainStyles';
+import { MuiThemeProvider } from '@material-ui/core'
 
 import { JsonQueryAuth, HostAddress, getCookie } from '../Services/Query'
 import { Navigation } from '../Components/Navigation';
 import { MatchCard, ChallengeCard, GameCard } from '../Components/Cards';
 
-import { Grid, Typography, Fab, Button } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import { GridList, GridListTile, GridListTileBar } from '@material-ui/core';
-import { TextField, Avatar, MenuItem } from '@material-ui/core';
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from '@material-ui/core';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Slide from '@material-ui/core/Slide';
 import './Dashboard.css'
@@ -36,6 +36,11 @@ export class Dashboard extends Component {
             contact_string: ''
         }
     }
+    componentDidMount() {
+        document.body.classList.remove('body-a')
+        this.load()
+    }
+
     handleChange = name => e => {
         this.setState({
             [name]: e.target.value
@@ -69,12 +74,7 @@ export class Dashboard extends Component {
             games: gamePocket,
             gameList: gameList
         })
-        console.log(gamePocket);
     }
-    componentDidMount() {
-        this.load()
-    }
-
     toggleAddGame = () => {
         this.setState({
             isAddGame: !this.state.isAddGame,
@@ -93,7 +93,7 @@ export class Dashboard extends Component {
         const { game_id, contact_string } = this.state
         const res = await JsonQueryAuth('post', 'dashboard/game/add', { game_id, contact_string})
         if(res.errors) {
-            console.log(res.errors)
+            //console.log(res.errors)
         }if(res.status === 'ok') {
             //alert('game added succenssfully')
             this.toggleAddGame()
@@ -141,6 +141,7 @@ export class Dashboard extends Component {
         }
 
         return (
+            <MuiThemeProvider theme={myTheme}>
             <div className='Dashboard Page'>
                 <Navigation active='dashboard' load={this.load} />
                 <section className='ContainerCenter'>
@@ -231,6 +232,7 @@ export class Dashboard extends Component {
                     </DialogContent>
                 </Dialog>
             </div>
+            </MuiThemeProvider>
         );
     }
 };

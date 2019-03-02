@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from './MainStyles';
+import { ColorPalate } from './MainStyles';
 
 import { JsonQueryAuth, HostAddress } from '../Services/Query';
-import { Paper, Grid, Avatar, Card, CardMedia, Button } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import styles from './Cards.module.css';
 
@@ -50,15 +50,15 @@ export class ChallengeCard extends Component {
         return (
             <React.Fragment>
                 <Grid item container xs={12} md={4} justify='center' alignItems='center' style={{ marginBottom: 8 }}>
-                    <div className={styles.bCard} onClick={this.toggleChallenge}>
+                    <div className={`${styles.bCard} animated bounceInRight`} onClick={this.toggleChallenge}>
                         <div>
-                            <img src={`${HostAddress}gameimg/${this.state.game.image}`} />
+                            <img src={`${HostAddress}gameimg/${this.state.game.image}`} alt='game'/>
                             <h1>{this.state.game.name}</h1>
                             <h2>Bet: {this.state.bet} BP</h2>
                             <h2>{this.state.opponent.full_name}</h2>
                         </div>
                         <div>
-                            <img src={`${HostAddress}${this.state.opponent.image}`} />
+                            <img src={`${HostAddress}${this.state.opponent.image}`} alt='opponent' />
                         </div>
                     </div>
                 </Grid>
@@ -80,9 +80,6 @@ export class ChallengeCard extends Component {
 
 
 export class MatchCard extends Component {
-    constructor(props) {
-        super(props)
-    }
     redirect = id => async e => {
         this.props.history.push(`/match/${id}`)
     }
@@ -90,7 +87,7 @@ export class MatchCard extends Component {
         const { id, bet, game, opponent } = this.props
         return (
             <Grid item container xs={12} md={4} lg={3} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
-                <div className={styles.cCard} onClick={this.redirect(id)}>
+                <div className={`${styles.cCard} animated bounceInLeft`} onClick={this.redirect(id)}>
                     <div>
                         <img src={`${HostAddress}gameimg/${game.image}`} />
                     </div>

@@ -24,7 +24,7 @@ class App extends Component {
         <Route path='/history' component={History} />
         <Route path='/leaderboard' component={Leaderboard} />
         <Route path='/profile' component={Profile} />
-        <Route path='/profileOther' component={OtherProfile} />
+        <Route path='/profileOther/:id' component={OtherProfile} />
         <Route path='/tournament' component={Tournament} />
         <Route path='/wallet' component={Wallet} />
         <Route Path='/match/:id' component={Match} />

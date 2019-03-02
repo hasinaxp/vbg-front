@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import { JsonQueryAuth, HostAddress } from '../Services/Query'
+import { JsonQueryAuth } from '../Services/Query'
 
-import { Table, TableHead, TableBody, TableCell, TableRow, TableFooter, TablePagination } from '@material-ui/core';
+import { Table, TableHead, TableBody, TableCell, TableRow, TablePagination } from '@material-ui/core';
 
 
 export class MatchTable extends Component {

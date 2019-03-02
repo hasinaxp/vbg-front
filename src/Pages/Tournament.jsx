@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from '../Components/MainStyles'
+import { MainStyles, ColorPalate, myTheme } from '../Components/MainStyles';
+import { MuiThemeProvider } from '@material-ui/core'
 
-
-import { JsonQueryAuth, HostAddress, getCookie } from '../Services/Query'
+import { JsonQueryAuth, HostAddress } from '../Services/Query'
 import { Navigation } from '../Components/Navigation';
 import { TournamentCard } from '../Components/Cards';
 
-
-import { Grid, Typography, Fab, Button } from '@material-ui/core';
+import SwipeableViews from 'react-swipeable-views';
+import { Grid, Typography } from '@material-ui/core';
 import { Paper, Card, CardMedia, CardContent, CardActionArea } from '@material-ui/core';
-import { GridList, GridListTile, GridListTileBar } from '@material-ui/core';
-import { TextField, Avatar, MenuItem } from '@material-ui/core';
-import { List, ListItem,ListSubheader, ListItemText } from '@material-ui/core';
+import { Tab, Tabs, AppBar } from '@material-ui/core';
+import { Avatar } from '@material-ui/core';
+import { List, ListItem, ListSubheader, } from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from '@material-ui/core';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Slide from '@material-ui/core/Slide';
 
 export class Tournament extends Component {
     constructor(props) {
@@ -31,10 +29,14 @@ export class Tournament extends Component {
             tournament_id: id
         })
     }
+    load = () => {
+        //do nothing
+    }
     render() {
         return (
+            <MuiThemeProvider theme={myTheme}>
             <div className='Tournament Page'>
-                <Navigation active='tournament' />
+                <Navigation active='tournament' load={this.load} />
                 <section className='ContainerCenter'>
                     {
                         this.state.isInTournament ? <TournamentInSide tournament_id={this.state.tournament_id} /> :
@@ -42,6 +44,7 @@ export class Tournament extends Component {
                     }
                 </section>
             </div>
+            </MuiThemeProvider>
         )
     }
 }
@@ -63,7 +66,7 @@ class TournamentOutSide extends Component {
             not_participating: res.tournaments.not_participating,
             participating: res.tournaments.participating
         })
-        console.log(res)
+        
     }
     render() {
         return (
@@ -119,7 +122,9 @@ class TournamentInSide extends Component {
             prize1: '',
             prize2: '',
             bet: '',
-            capacity: ''
+            rules: [],
+            capacity: '',
+            tabId: 0
         }
     }
     componentDidMount() {
@@ -128,11 +133,19 @@ class TournamentInSide extends Component {
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/${this.state.tournament_id}`, {})
         if (res.status = 'ok') {
-            const { game, players, prize1, prize2, bet, capacity } = res
+            const { game, players, prize1, prize2, bet, capacity,} = res
+            let rules = res.rules.split('\n')
             this.setState({
-                game, players, prize1, prize2, bet, capacity
+                game, players, prize1, prize2, bet, capacity, rules
             })
         }
+    }
+    changeTab = (event, value) => {
+        this.setState({ tabId: value })
+    }
+    handleChangeIndex = (index) => {
+        if(index >= 0 && index <= 1)
+        this.setState({ tabId: index })
     }
     render() {
         return (
@@ -154,8 +167,35 @@ class TournamentInSide extends Component {
                         <TournamentPlayers players={this.state.players} />
                     </Grid>
                     <Grid item xs={12} md={8} style={{ padding: 20 }}>
-                        <Paper style={{ ...MainStyles.paper, padding: 16 }}>
-
+                        <Paper style={{ ...MainStyles.paper }}>
+                            <AppBar position="static" style={{ backgroundColor: '#444' }}>
+                                <Tabs value={this.state.tabId} onChange={this.changeTab} indicatorColor='primary' textColor='primary'>
+                                    <Tab value={0} label="INFO" style={{ color: this.state.tabId === 0 ? ColorPalate.greenLight : ColorPalate.green }} />
+                                    <Tab value={1} label="RULES" style={{ color: this.state.tabId === 1 ? ColorPalate.greenLight : ColorPalate.green }} />
+                                </Tabs>
+                            </AppBar>
+                            <SwipeableViews
+                                index={this.state.tabId}
+                                onChangeIndex={this.handleChangeIndex}
+                            >
+                            <Grid container style={{padding: 8}}>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Tournament Id</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.tournament_id}</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Entry Fee</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.bet} bp</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>First Prize</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.prize1} bp</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Second Prize</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.prize2} bp</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Tournament Capacity</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.capacity}</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Joined players</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.players.length}</Grid>
+                            </Grid>
+                            <div style={{color: ColorPalate.green, padding: 8}}>
+                            {this.state.rules.map( (r, i) => (<div key={i}>{r}</div>))}
+                            </div>
+                            </SwipeableViews>
                         </Paper>
                         <Paper style={{
                             ...MainStyles.paper, padding: 16, height: '60vh',
@@ -185,7 +225,6 @@ class TournamentBracket extends Component {
     }
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/bracket/${this.props.tournament_id}`, {})
-        console.log(res)
         this.setState({
             bracket: res.bracket.tree,
             rounds: res.bracket.rounds
@@ -217,7 +256,7 @@ class TournamentPlayers extends Component {
         return (
             <React.Fragment>
                 <List style={{ ...MainStyles.paper, width: '100%', margin: '20px' }}
-                subheader={<ListSubheader component="div" style={{color: ColorPalate.greenLight}}>Perticipating players</ListSubheader>}
+                    subheader={<ListSubheader component="div" style={{ color: ColorPalate.greenLight }}>Perticipating players</ListSubheader>}
                 >
                     {this.props.players.map(player => (
                         <ListItem button key={player._id}>

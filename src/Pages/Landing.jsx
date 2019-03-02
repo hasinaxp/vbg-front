@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from '../Components/MainStyles';
+import { ColorPalate, myTheme } from '../Components/MainStyles';
+import { MuiThemeProvider } from '@material-ui/core'
 
 import { JsonQuery, SetCookie } from '../Services/Query'
-import { Router } from 'react-router-dom'
-
 import { Grid, Drawer, TextField, LinearProgress } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-//import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
 
 import './Landing.css';
 
@@ -44,15 +42,14 @@ class Register extends Component {
         if (full_name === '' || full_name === undefined) {
 
         }
-        console.log('form submitted')
         const res = await JsonQuery('post', 'sign/register', { full_name, email, password, confirm });
         this.setState({ isCalling: false })
-        console.log(res);
         this.clearMsg();
         if (res.errors) {
             res.errors.map(err => {
                 const fieldName = 'msg_' + err.param;
-                this.setState({ [fieldName]: err.msg });
+                this.setState({ [fieldName]: err.msg })
+                return err
             });
         } else {
             alert(`registration successful`)
@@ -149,15 +146,14 @@ class SignIn extends Component {
         e.preventDefault();
         this.setState({ isCalling: true })
         const { email, password } = this.state;
-        console.log('form submitted')
         const res = await JsonQuery('post', 'sign/login', { email, password });
         this.setState({ isCalling: false })
-        console.log(res);
         this.clearMsg();
         if (res.errors) {
             res.errors.map(err => {
                 const fieldName = 'msg_' + err.param;
                 this.setState({ [fieldName]: err.msg });
+                return err
             });
         } else {
             SetCookie('logauti', res.id);
@@ -316,8 +312,8 @@ export class Landing extends Component {
                                 <p>Lorem ipsum dolor sit amet, in velit iudico mandamus sit, persius dolorum in per, postulant mnesarchum cu nam. Malis movet ornatus id vim, feugait detracto est ea, eam eruditi conceptam in. Ne sit explicari interesset. Labores perpetua cum at. Id viris docendi denique vim.</p>
                             </div>
 
-                            <img src={require('../img/8ball.jpg')} />
-                            <img src={require('../img/chess.jpg')} />
+                            <img src={require('../img/8ball.jpg')} alt='game'/>
+                            <img src={require('../img/chess.jpg')} alt='chess'/>
                         </div>
 
                         <div id="slide3" className="slide">

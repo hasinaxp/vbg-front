@@ -241,25 +241,25 @@ class GameBtn extends Component {
                 dialogTitle = 'Challenge';
                 dialogContent = (
                     <React.Fragment>
-                        <Grid container justify='center' alignItems='center'>
+                        <Grid container justify='center' alignItems='center' >
                             <Grid item xs={12}>
                                 <Grid container spacing={16} justify="center" alignItems="center">
                                     <Grid item xs={5} style={MainStyles.centerContainer}>
-                                        <Avatar
+                                        <Avatar 
                                             alt={this.state.self.full_name}
                                             src={`${HostAddress}${this.state.self.image}`}
                                             style={{ width: window.innerWidth < 600 ? 100 : 200, height: window.innerWidth < 600 ? 100 : 200 }} />
-                                        <span style={{ textAlign: 'center' }}>{this.state.self.full_name}</span>
+                                        <span style={{ textAlign: 'center', color:'#aaa' }}>{this.state.self.full_name}</span>
                                     </Grid>
-                                    <Grid item xs={2} style={{ textAlign: 'center' }}>
-                                        <span> VS </span>
+                                    <Grid item xs={2} style={{ textAlign: 'center', color: ColorPalate.greenLight, fontSize: '1.6rem' }} className='animated heartBeat infinite'>
+                                        <span > VS </span>
                                     </Grid>
                                     <Grid item xs={5} style={MainStyles.centerContainer}>
                                         <Avatar
                                             alt="Remy Sharp"
                                             src={`${HostAddress}${this.state.opponent.image}`}
                                             style={{ width: window.innerWidth < 600 ? 100 : 200, height: window.innerWidth < 600 ? 100 : 200 }} />
-                                        <span style={{ textAlign: 'center' }}>{this.state.opponent.full_name}</span>
+                                        <span style={{ textAlign: 'center', color:'#aaa' }}>{this.state.opponent.full_name}</span>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -281,7 +281,7 @@ class GameBtn extends Component {
                             </Grid>
                             <Grid item xs={12} style={MainStyles.centerContainer}>
                                 <Button
-                                    style={{ color: 'green', marginTop: 30, width: '100%', padding: 20, fontSize: '1.3rem' }}
+                                    style={{ marginTop: 30, width: '100%', padding: 20, fontSize: '1.3rem', color: ColorPalate.greenLight }}
                                     onClick={this.challenge}
                                 >
                                     <i className="fas fa-gamepad"></i>{'\u00A0'}Challenge
@@ -294,7 +294,7 @@ class GameBtn extends Component {
         }
         return (
             <div style={MainStyles.gameBtn}>
-                <Fab style={{ backgroundColor: '#00c853' }} onClick={this.toggleChallenge}>
+                <Fab style={{ backgroundColor: '#00c853' }} onClick={this.toggleChallenge} className='animated rubberBand'>
                     <img src={require('../img/icons/sword.svg')} alt="B" style={{ width: 30 }} />
                 </Fab>
                 <Dialog

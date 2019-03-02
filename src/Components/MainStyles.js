@@ -1,8 +1,41 @@
+import {createMuiTheme} from '@material-ui/core'
+
 const colors = {
     blackLight: '#334',
     greenLight: '#76ff03',
     green: '#aaa',
 }
+
+export const myTheme = createMuiTheme({
+    palette: {
+        type: 'dark',
+        primary: {
+            light: '#bbb',
+            main: colors.greenLight,
+            dark: '#76ff03'
+         },
+         secondary: {
+           main: colors.greenLight,
+         },
+         textColor: "#bdbdbd",
+      },
+    typography: { 
+        useNextVariants: true
+     },
+     appBar: {
+        "textColor": "#33691e"
+    },
+    card: {
+        "titleColor": "rgba(118, 255, 3, 0.87)",
+        "subtitleColor": "rgba(224, 224, 224, 0.54)"
+    },
+    overlay: {
+        "backgroundColor": "rgba(0, 0, 0, 0.87)"
+    },
+    paper: {
+        backgroundColor: "rgba(33, 33, 33, 0.66)"
+    },
+})
 
 export const ColorPalate = colors;
 
@@ -14,6 +47,7 @@ export const  MainStyles = {
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
+        color: colors.greenLight
     },
     logo: {
         width: 140

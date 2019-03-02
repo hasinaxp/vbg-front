@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from '../Components/MainStyles';
+import { MainStyles, ColorPalate, myTheme } from '../Components/MainStyles';
+import { MuiThemeProvider } from '@material-ui/core'
 
-import { JsonQueryAuth, HostAddress, getCookie, PostQueryAuth } from '../Services/Query'
+import { JsonQueryAuth, HostAddress, PostQueryAuth } from '../Services/Query'
 
 import { Navigation } from '../Components/Navigation';
 
 import { Paper, Grid, LinearProgress, TextField } from '@material-ui/core';
 import { Card, CardMedia, CardActionArea, CardContent, CardActions, Typography, Button, Divider, CircularProgress } from '@material-ui/core';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent} from '@material-ui/core';
 
 export class Profile extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ export class Profile extends Component {
                 match: res.match,
                 level: res.level
             })
-            console.log(res)
+            
         }
     }
     toggleChangePassword = () => {
@@ -69,6 +70,7 @@ export class Profile extends Component {
             res.errors.map(err => {
                 const fieldName = 'msg_' + err.param;
                 this.setState({ [fieldName]: err.msg });
+                return err
             });
         }
         if(res.status === 'ok' ) {
@@ -83,6 +85,7 @@ export class Profile extends Component {
 
     render() {
         return (
+            <MuiThemeProvider theme={myTheme}>
             <div className='Profile Page'>
                 <Navigation active='profile' load={this.load} />
                 <section className='ContainerCenter'>
@@ -98,7 +101,7 @@ export class Profile extends Component {
                             </Grid>
                             <Grid item xs={12} md={9}>
                                 {
-                                    this.state.isDataAvailable ? <InfoCard match={this.state.match} level={this.state.level} user={this.state.user} /> : ''
+                                    this.state.isDataAvailable ? <InfoCard match={this.state.match} level={this.state.level} user={this.state.user} isJenuine={true}/> : ''
                                 }
                             </Grid>
                         </Grid>
@@ -146,17 +149,67 @@ export class Profile extends Component {
                     </DialogContent>
                 </Dialog>
             </div>
+            </MuiThemeProvider>
         );
     }
 };
 
 export class OtherProfile extends Component {
+    constructor(props) {
+        super(props)
+        const urlFragments = window.location.href.split('/');
+        const user_id = urlFragments[urlFragments.length - 1];
+        this.state = {
+            isDataAvailable: false,
+            user_id : user_id,
+            user: '',
+            image: require('../img/default.jpg'),
+            name: '',
+            match: {},
+            level: {},
+        }
+    }
+
+    componentDidMount() {
+        this.load()
+    }
+    load = async e => {
+        const res = await JsonQueryAuth('post', `profile/${this.state.user_id}`, {});
+        if (res.status === 'ok') {
+            this.setState({
+                isDataAvailable: true,
+                user: res.user,
+                name: res.user.full_name,
+                image: `${HostAddress}user/${res.user.folder}/${res.user.image}`,
+                match: res.match,
+                level: res.level
+            })
+            
+        }
+    }
+
     render() {
         return (
             <div className='Profile Page'>
-                <Navigation />
-                <section>
-
+                <Navigation active='profile' load={this.load} />
+                <section className='ContainerCenter'>
+                    <Paper className='Block' style={MainStyles.block}>
+                        <h1><i className="fas fa-users"></i> Profile</h1><br />
+                        <Grid container spacing={16}>
+                            <Grid item xs={12} md={3}>
+                                <ProfileCard
+                                    load={this.load}
+                                    image={this.state.image}
+                                    name={this.state.name}
+                                    isJenuine={false} />
+                            </Grid>
+                            <Grid item xs={12} md={9}>
+                                {
+                                    this.state.isDataAvailable ? <InfoCard match={this.state.match} level={this.state.level} user={this.state.user} isJenuine={false}/> : ''
+                                }
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </section>
             </div>
         );
@@ -196,7 +249,6 @@ class ProfileCard extends Component {
             changeImageProgress: true
         })
         const imageFile = e.target.files[0]
-        console.log(imageFile)
         let fd = new FormData()
         fd.append('image', imageFile, 'image.jpg')
         const res = await PostQueryAuth('profile/update/image', fd)
@@ -312,7 +364,7 @@ class ProfileCard extends Component {
     }
 }
 
-const InfoCard = ({ match, level, user }) => {
+const InfoCard = ({ match, level, user, isJenuine }) => {
     let Info = {
         email: user.email,
         Balance: user.balance,
@@ -323,6 +375,15 @@ const InfoCard = ({ match, level, user }) => {
         total_wins: match.m_win,
         total_matches: match.m_match
     }
+    if(!isJenuine)
+        Info = {
+            level: level.m_level,
+        leader_points: user.leader_point,
+        next_level: level.m_next,
+        total_winning: user.total_bp_win,
+        total_wins: match.m_win,
+        total_matches: match.m_match
+        }
     let Percents = {
         next_level: level.m_levelExpPercent,
         win_persentage: match.m_average
@@ -344,7 +405,7 @@ const InfoCard = ({ match, level, user }) => {
                 <br />
                 <Grid item container xs={12} space={12} justify='center' alignItems='center'>
                     <Grid item xs={6}>
-                        <CircularProgress thickness={12}
+                        <CircularProgress thickness={12} className='animated jackInTheBox'
                             variant="static"
                             value={Percents.win_persentage}
                             size='80%'
@@ -354,7 +415,7 @@ const InfoCard = ({ match, level, user }) => {
                             }} />
                     </Grid>
                     <Grid item xs={6}>
-                        <CircularProgress thickness={16}
+                        <CircularProgress thickness={16} className='animated jackInTheBox'
                             variant="static"
                             value={Percents.next_level}
                             size='80%' style={{

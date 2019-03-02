@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import { MainStyles, ColorPalate } from '../Components/MainStyles';
+import { Link } from 'react-router-dom'
+import { MainStyles, ColorPalate, myTheme } from '../Components/MainStyles';
 
-import { JsonQueryAuth, HostAddress } from '../Services/Query'
+import { JsonQueryAuth, PostQueryAuth, HostAddress, getCookie } from '../Services/Query'
 import openSocket from 'socket.io-client';
 
 import { Grid, Paper } from '@material-ui/core'
 import { TextField, Button, Fab } from '@material-ui/core'
 import { Card, CardActionArea, CardMedia, CardContent } from '@material-ui/core'
 import { List, ListItem, ListItemText, Avatar } from '@material-ui/core'
-import { createMuiTheme, Theme, MuiThemeProvider } from '@material-ui/core'
-
-const myTheme = createMuiTheme({
-    palette: {
-        type: 'dark',
-    },
-})
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core'
 
 const socket = openSocket('http://localhost:3000');
 
@@ -42,21 +38,62 @@ export class Match extends Component {
             chat_id: '',
             contact_string: '',
             chatVisible: false,
-        }
-    }
-    load = async e => {
-
-        const res = await JsonQueryAuth('get', `match/${this.state.match_id}`)
-        if (res.status === 'ok') {
-            const { match_id, game, challenger, challenged, chat_id, sender, contact_string, time, bet } = res;
-            this.setState({
-                game, challenger, challenged, chat_id, sender, contact_string, time, bet, chatVisible: true
-            })
+            is_c : 0,
+            isAdmitDefeat : false,
+            isClaimVectory : false
         }
     }
     componentDidMount() {
         this.load()
     }
+    load = async e => {
+
+        const res = await JsonQueryAuth('post', `match/m/${this.state.match_id}`, {})
+        if (res.status === 'ok') {
+            const { game, challenger, challenged, chat_id, sender, contact_string, time, bet } = res;
+            const myId = getCookie('logauti')
+            let is_c = 0
+            if(myId === challenger._id) is_c = 1
+            this.setState({
+                game, challenger, challenged, chat_id, sender, contact_string, time, bet, is_c, chatVisible: true
+            })
+        }
+    }
+    toggleAdmitDefeat = () => {
+        this.setState({
+            isAdmitDefeat : !this.state.isAdmitDefeat
+        })
+    }
+    toggleClaimVictory = () => {
+        this.setState({
+            isClaimVectory : !this.state.isClaimVectory
+        })
+    }
+    claimVictory = async e => {
+        e.preventDefault()
+        const imageFile = e.target.files[0]
+        let x = imageFile.name.split('.');
+        x = x[x.length - 1]
+        let fd = new FormData()
+        fd.append('image', imageFile, `${this.state.match_id}.${x}`)
+        fd.append('m_id', this.state.match_id)
+        fd.append('is_c', this.state.is_c)
+        const res = await PostQueryAuth('match/claimVectory', fd)
+        if (res.status === 'ok') {
+            this.toggleClaimVictory()
+        }
+    }
+    admitDefeat = async () => {
+        const data = {
+            m_id : this.state.match_id,
+            is_c : this.state.is_c
+        }
+        const res = await JsonQueryAuth('post', 'match/admitDefeat', data)
+        if(res.status === 'ok') {
+            this.props.history.push('/dashboard')
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -87,6 +124,7 @@ export class Match extends Component {
                                             primary={<span style={{ color: ColorPalate.green, fontSize: '1.4rem' }}> Opponent's  Contact</span>}
                                             secondary={<span style={{ color: ColorPalate.greenLight, fontSize: '1.2rem' }}> {this.state.contact_string} </span>} />
                                     </ListItem>
+                                    <Link to={`/profileOther/${this.state.challenged._id}`} style={{ textDecoration: 'none', color: ColorPalate.greenLight }}>
                                     <ListItem button>
                                         <Avatar
                                             alt="Remy Sharp"
@@ -96,6 +134,8 @@ export class Match extends Component {
                                             primary={<span style={{ color: ColorPalate.green, fontSize: '1.4rem' }}> Challenger </span>}
                                             secondary={<span style={{ color: ColorPalate.greenLight, fontSize: '1.2rem' }}> {this.state.challenger.full_name} </span>} />
                                     </ListItem>
+                                    </Link>
+                                    <Link to={`/profileOther/${this.state.challenged._id}`} style={{ textDecoration: 'none', color: ColorPalate.greenLight }}>
                                     <ListItem button>
                                         <Avatar
                                             alt="Remy Sharp"
@@ -105,6 +145,7 @@ export class Match extends Component {
                                             primary={<span style={{ color: ColorPalate.green, fontSize: '1.4rem' }}> challenged </span>}
                                             secondary={<span style={{ color: ColorPalate.greenLight, fontSize: '1.2rem' }}> {this.state.challenged.full_name} </span>} />
                                     </ListItem>
+                                    </Link>
                                     <ListItem button>
                                         <ListItemText
                                             primary={<span style={{ color: ColorPalate.green, fontSize: '1.4rem' }}> bet </span>}
@@ -115,8 +156,8 @@ export class Match extends Component {
                             <Grid item xs={12} md={8} style={{ padding: 20 }}>
                                 <Paper style={{ ...MainStyles.paper, padding: 16 }}>
                                     <h2 style={{ color: ColorPalate.green }}>Evaluation</h2>
-                                    <Button variant='outlined' style={{ width: '40%', margin: '2.5%', padding: 16, color: ColorPalate.greenLight }}>Clain Victory</Button>
-                                    <Button variant='outlined' style={{ width: '40%', margin: '2.5%', padding: 16, color: ColorPalate.greenLight }}>Admit Defeat</Button>
+                                    <Button variant='outlined'  onClick={this.toggleClaimVictory} style={{ width: '40%', margin: '2.5%', padding: 16, color: ColorPalate.greenLight }}>Clain Victory</Button>
+                                    <Button variant='outlined' onClick={this.toggleAdmitDefeat} style={{ width: '40%', margin: '2.5%', padding: 16, color: ColorPalate.greenLight }}>Admit Defeat</Button>
                                 </Paper>
                                 <Paper style={{ ...MainStyles.paper, padding: 16, height: '60vh', marginTop: 20 }}>
                                     <h2 style={{ color: ColorPalate.green }}>Chat</h2>{
@@ -127,12 +168,45 @@ export class Match extends Component {
                             </Grid>
                         </Grid>
                     </div>
+                    <Dialog
+                        open={this.state.isClaimVectory}
+                        onClose={this.toggleClaimVictory}
+                        keepMounted>
+                        <DialogTitle>UPLOAD SCREENSHOT</DialogTitle>
+                        <DialogContent>
+                            <div>
+                                <form encType="multipart/form-data">
+                                    <Button style={{ margin: '1vw', width: '90%' }}>
+                                        <input type='file'
+                                            style={{ width: '100%', opacity: 0, position: 'absolute' }}
+                                            onChange={this.claimVictory} />
+                                        <span><i className="fas fa-upload"></i> upload screenShot</span>
+                                    </Button>
+                                </form>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                    <Dialog open={this.state.isAdmitDefeat} onClose={this.toggleAdmitDefeat} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">ADMIT DEFEAT</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText>
+                            Do you really want to admit defeat?
+                        </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={this.admitDefeat} color='primary'>
+                            Ok
+                        </Button>
+                        <Button onClick={this.toggleAdmitDefeat} color='secondary'>
+                            Cancel
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
                 </MuiThemeProvider>
             </React.Fragment>
         )
     }
 }
-
 
 class ChatBox extends Component {
     constructor(props) {
@@ -147,7 +221,6 @@ class ChatBox extends Component {
 
     componentDidMount() {
         this.load();
-
     }
     handleChange = name => e => {
         this.setState({
@@ -155,12 +228,12 @@ class ChatBox extends Component {
         })
     }
     load = async () => {
-        console.log(this.state.chat_id)
         LoadChats(this.state.chat_id, (data) => {
             this.setState({
                 messages: data.chat.log
             })
             const chatbox = this.chatbox.current
+            if(chatbox !== null && chatbox !== undefined)
             chatbox.scrollTop = chatbox.scrollHeight
         })
         socket.emit('chatResponse', {
