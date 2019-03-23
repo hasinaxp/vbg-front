@@ -78,18 +78,21 @@ class TournamentMenu extends Component {
         this.state = {
             isCalling: false,
             player_counts: PlayerCounts,
+            entry_fee:'',
             balances: Balances,
             games: [],
             tournaments_ongoing: [],
             tournaments_yet_to_start: [],
             game: '',
             player_count: 4,
-            balance: 0,
+            balance: 10,
             rules: '',
-            msg_game: '',
-            msg_player_count: 4,
-            msg_balance: 0,
-            msg_rules: ''
+            msg_tournament_game_id: '',
+            msg_tournament_player_count: '',
+            msg_tournament_balance: '',
+            msg_tournament_rules: '',
+            msg_tournament_entry_fee: '',
+            tournament_image:''
         }
     }
     componentDidMount() {
@@ -114,10 +117,11 @@ class TournamentMenu extends Component {
     }
     clearMsg = () => {
         this.setState({
-            msg_game: '',
-            msg_player_count: 4,
-            msg_balance: 0,
-            msg_rules: ''
+            msg_tournament_game_id: '',
+            msg_tournament_player_count: '',
+            msg_tournament_balance: '',
+            msg_tournament_rules: '',
+            msg_tournament_entry_fee: ''
         });
     }
     handleChange = name => e => {
@@ -125,30 +129,52 @@ class TournamentMenu extends Component {
             [name]: e.target.value
         })
     }
+    onDrop = picture => {
+        this.setState({
+            tournament_image: picture,
+        });
+        console.log(picture)
+    }
+    onFileUpload = e => {
+        this.setState({
+            tournament_image: e.target.files[0]
+        })
+    }
     addTournament = async e => {
         e.preventDefault();
         this.setState({ isCalling: true })
-        const {game, rules, balance, player_count } = this.state
-        const res = await JsonQueryAdmin('post','admin/tournament/create',{
-            game_id : game, rules, balance, player_count
-        })
+        // const {game, rules, balance, player_count,entry_fee,tournament_image } = this.state
+        let fd = new FormData()
+        fd.append('image', this.state.tournament_image)
+        fd.append('rules', this.state.rules)
+        fd.append('balance', this.state.balance)
+        fd.append('player_count', this.state.player_count)
+        fd.append('entry_fee', this.state.entry_fee)
+        fd.append('game_id', this.state.game)
+        const res = await PostQuery('admin/tournament/create', fd)
+
+        // const res = await JsonQueryAdmin('post','admin/tournament/create',{
+        //     game_id : game, rules, balance, player_count,entry_fee
+        // })
         console.log('form submitted')
         this.setState({ isCalling: false })
         console.log(res);
         this.clearMsg();
         if (res.errors) {
             res.errors.map(err => {
-                const fieldName = 'msg_game_' + err.param
+                const fieldName = 'msg_tournament_' + err.param
                 this.setState({ [fieldName]: err.msg })
             });
         } else {
+            alert("Tournament created successfully");
             this.setState ({
                 game: '',
                 player_count: 4,
                 balance: 0,
                 rules: '',
-            })
-            this.load()
+                entry_fee:''
+            });
+            this.load();
         }
     }
 
@@ -168,6 +194,8 @@ class TournamentMenu extends Component {
                                             label="Select Game"
                                             value={this.state.game}
                                             onChange={this.handleChange('game')}
+                                            helperText={this.state.msg_tournament_game_id}
+                                            error={this.state.msg_tournament_game_id.length > 0}
                                         >
                                             {this.state.games.map(option => (
                                                 <MenuItem key={option.value} value={option.value}>
@@ -179,9 +207,11 @@ class TournamentMenu extends Component {
                                     <Grid item xs={12} md={6} >
                                         <TextField style={{ margin: '1vw', width: '90%' }}
                                             select
-                                            label="Select Bet"
+                                            label="Select Prize"
                                             value={this.state.balance}
                                             onChange={this.handleChange('balance')}
+                                            helperText={this.state.msg_tournament_balance}
+                                            error={this.state.msg_tournament_balance.length > 0}
                                         >
                                             {this.state.balances.map(option => (
                                                 <MenuItem key={option} value={option}>
@@ -196,12 +226,25 @@ class TournamentMenu extends Component {
                                             label="Player Count"
                                             value={this.state.player_count}
                                             onChange={this.handleChange('player_count')}
+                                            helperText={this.state.msg_tournament_player_count}
+                                            error={this.state.msg_tournament_player_count.length > 0}
                                         >
                                             {this.state.player_counts.map(option => (
                                                 <MenuItem key={option.value} value={option.value}>
                                                     {option.text}
                                                 </MenuItem>
                                             ))}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={12} md={6} >
+                                        <TextField style={{ margin: '1vw', width: '90%' }}
+                                            label="Entry Fee"
+                                            value={this.state.entry_fee}
+                                            onChange={this.handleChange('entry_fee')}
+                                            helperText={this.state.msg_tournament_entry_fee}
+                                            error={this.state.msg_tournament_entry_fee.length > 0}
+                                        >
+                                            
                                         </TextField>
                                     </Grid>
                                     <Grid item xs={12} md={12} >
@@ -211,9 +254,17 @@ class TournamentMenu extends Component {
                                             margin="normal"
                                             value={this.state.rules}
                                             onChange={this.handleChange('rules')}
-                                            helperText={this.state.msg_rules}
-                                            error={this.state.msg_rules.length > 0}
+                                            helperText={this.state.msg_tournament_rules}
+                                            error={this.state.msg_tournament_rules.length > 0}
                                         />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <Button style={{ margin: '1vw', width: '90%' }}>
+                                            <input type='file'
+                                                style={{ width: '100%', opacity: 0, position: 'absolute' }}
+                                                onChange={this.onFileUpload} />
+                                            <span><i className="fas fa-upload"></i> Upload Tournament Image</span>
+                                        </Button>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Button type='submit' variant='outlined' style={{ margin: '1vw', width: '90%' }}>
@@ -277,6 +328,7 @@ class GameMenu extends Component {
             msg_game_platform: '',
             msg_game_requirement: '',
             msg_game_image: '',
+            
         }
     }
     clearMsg = () => {
@@ -320,7 +372,8 @@ class GameMenu extends Component {
         fd.append('name', this.state.game_name)
         fd.append('platform', this.state.game_platform)
         fd.append('requirement', this.state.game_requirement)
-        fd.append('player_count', this.state.game_player_count)
+        // fd.append('player_count', this.state.game_player_count)
+        
         const res = await PostQuery('admin/game/add', fd)
         console.log('form submitted')
         this.setState({ isCalling: false })
@@ -332,7 +385,12 @@ class GameMenu extends Component {
                 this.setState({ [fieldName]: err.msg })
             });
         } else {
-            this.load()
+            if(res.error == 1) {
+                alert(res.message);
+            } else {
+                alert("Game added successfully");
+                this.load();
+            }
         }
     }
 
@@ -344,7 +402,7 @@ class GameMenu extends Component {
                         <Paper style={{ margin: '20px', padding: '20px' }}>
                             <h2>Add Game</h2>
                             {this.state.isCalling ? <LinearProgress /> : ''}
-                            <form onSubmit={this.addGame} encType="multipart/form-data">
+                            <form onSubmit={this.addGame} >
                                 <Grid container alignItems='center' justify='center'>
                                     <Grid item xs={12} md={6} >
                                         <TextField style={{ margin: '1vw', width: '90%' }}
@@ -360,10 +418,8 @@ class GameMenu extends Component {
                                         <TextField style={{ margin: '1vw', width: '90%' }}
                                             label="Game Reqirement"
                                             margin="normal"
-                                            value={this.state.gameName}
-                                            onChange={this.handleChange('game_requirement')}
-                                            helperText={this.state.msg_game_requirement}
-                                            error={this.state.msg_game_requirement.length > 0}
+                                            value="ID"
+                                            readonly={true}
                                         />
                                     </Grid>
                                     <Grid item xs={12} md={6} >

@@ -12,7 +12,7 @@ import { List, ListItem, ListItemText, Avatar } from '@material-ui/core'
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core'
 
-const socket = openSocket('http://localhost:3000');
+const socket = openSocket(HostAddress);
 
 function LoadChats(chat_id, cb) {
     const responseUrl = "msgcame" + chat_id;
@@ -47,16 +47,16 @@ export class Match extends Component {
         this.load()
     }
     load = async e => {
-
+        
         const res = await JsonQueryAuth('post', `match/m/${this.state.match_id}`, {})
         if (res.status === 'ok') {
             const { game, challenger, challenged, chat_id, sender, contact_string, time, bet } = res;
             const myId = getCookie('logauti')
             let is_c = 0
-            if(myId === challenger._id) is_c = 1
+            if(myId === challenger._id) is_c = 1;
             this.setState({
                 game, challenger, challenged, chat_id, sender, contact_string, time, bet, is_c, chatVisible: true
-            })
+            });
         }
     }
     toggleAdmitDefeat = () => {
@@ -80,7 +80,8 @@ export class Match extends Component {
         fd.append('is_c', this.state.is_c)
         const res = await PostQueryAuth('match/claimVectory', fd)
         if (res.status === 'ok') {
-            this.toggleClaimVictory()
+            this.toggleClaimVictory();
+            alert("victory claimed successfully");
         }
     }
     admitDefeat = async () => {

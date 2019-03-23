@@ -73,7 +73,8 @@ export class Dashboard extends Component {
             tournamentMatches: matches.filter(m => m.isTournament),
             games: gamePocket,
             gameList: gameList
-        })
+        });
+        console.log(this.state.games);
     }
     toggleAddGame = () => {
         this.setState({
@@ -94,10 +95,12 @@ export class Dashboard extends Component {
         const res = await JsonQueryAuth('post', 'dashboard/game/add', { game_id, contact_string})
         if(res.errors) {
             //console.log(res.errors)
-        }if(res.status === 'ok') {
+        }else if(res.status === 'ok') {
             //alert('game added succenssfully')
             this.toggleAddGame()
             this.load()
+        }else if(res.status === 'fail') {
+            alert(res.msg);
         }
     }
     

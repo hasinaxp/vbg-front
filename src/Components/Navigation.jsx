@@ -140,12 +140,12 @@ class GameBtn extends Component {
         if (name === 'nameHint') {
             this.search(event.target.value)
         }
-    }
+    } 
     async componentDidMount() {
         const res = await JsonQueryAuth('POST', 'info/getGames', {})
         this.setState({
             games: res
-        })
+        });
     }
     search = async (name) => {
         const res = await JsonQueryAuth('POST', 'info/getChallangerList', { name: name, game_id: this.state.game })

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { ColorPalate } from './MainStyles';
 
 import { JsonQueryAuth, HostAddress } from '../Services/Query';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button,TextField,Slide } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import styles from './Cards.module.css';
 
-
-
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 export class ChallengeCard extends Component {
     constructor(props) {
         super(props);
@@ -132,8 +133,12 @@ export class TournamentCard extends Component {
     joinTournament = id => async e => {
         console.log(id)
         const res = await JsonQueryAuth('post', `tournament/join/`, { tournament_id: this.state.tournament_id })
-        if (res.status === 'ok')
+        if (res.status === 'ok') {
             this.props.load()
+        } else {
+            this.toggleJoin();
+            alert("Tournament is not valid");
+        }
     }
 
     render() {
@@ -172,8 +177,9 @@ export class GameCard extends Component {
         this.state = {
             isOpen: false,
             game: this.props.game,
-
-        }
+            isAddGame:false,
+            contact_string:this.props.game.contact_string
+        };;
     }
     toggleGame = () => {
         this.setState({
@@ -186,8 +192,56 @@ export class GameCard extends Component {
         if (res.status === 'ok')
             this.props.load()
     }
-
+    toggleAddGame = () => {
+        this.toggleGame();
+        this.setState({
+            isAddGame: !this.state.isAddGame,
+        })
+    }
+    handleChange = name => e => {
+        this.setState({
+            [name]: e.target.value
+        })
+    }
+    addGameSubmit = async e =>{
+        e.preventDefault()
+        const {contact_string } = this.state;
+        var game_id = this.props.game._id;
+        const res = await JsonQueryAuth('post', 'dashboard/game/updateid', { game_id, contact_string})
+        if(res.errors) {
+            //console.log(res.errors)
+        }else if(res.status === 'ok') {
+            alert('gameid updated succenssfully')
+            this.setState({
+                isAddGame: !this.state.isAddGame,
+            });
+        }else if(res.status === 'fail') {
+            alert(res.msg);
+        }
+    }
     render() {
+        let content;
+        console.log('-------------');
+        console.log(this.props.game);
+        content = (
+            <form onSubmit={this.addGameSubmit}>
+                <div>
+                    <TextField
+                        autoComplete="off"
+                        id="outlined-search"
+                        label={this.props.game.requirement}
+                        margin="normal"
+                        variant="outlined"
+                        value={this.state.contact_string}
+                        onChange={this.handleChange('contact_string')}
+                        style={{ width: window.innerWidth < 600 ? 'auto' : 400 }}
+                    />
+                </div>
+                <Button style={{color: '#157'}} type='submit' onClick={this.addGameSubmit}>
+                    Update Id
+                </Button>
+            </form>
+        );
         return (
             <React.Fragment>
                 <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
@@ -197,6 +251,9 @@ export class GameCard extends Component {
                         </div>
                         <h1>{this.props.game.name}</h1>
                         <h2>{this.props.game.platform ? 'mobile game' : 'pc game'}</h2>
+                        {this.props.game.contact_string &&
+                            <h4> GameId : {this.props.game.contact_string}</h4>
+                        }
                     </div>
                 </Grid>
                 <Dialog open={this.state.isOpen} onClose={this.toggleGame}>
@@ -207,13 +264,25 @@ export class GameCard extends Component {
                         <h4>Player Count :  {this.props.game.player_count}</h4>
                     </DialogContent>
                     <DialogActions>
-                        <Button style={{ color: 'green', fontWeight: 'bolder' }}>
+                        <Button style={{ color: 'green', fontWeight: 'bolder' }} onClick={this.toggleAddGame}>
                             Change Id
                         </Button>
                         <Button style={{ color: 'red', fontWeight: 'bolder' }} onClick={this.removeGame(this.props.game._id)}>
                             Remove Game
                         </Button>
                     </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={this.state.isAddGame}
+                    onClose={this.toggleAddGame}
+                    TransitionComponent={Transition}
+                    keepMounted>
+                    <DialogTitle>Games</DialogTitle>
+                    <DialogContent> 
+                        <div>
+                            {content}
+                        </div>
+                    </DialogContent>
                 </Dialog>
             </React.Fragment>
         )

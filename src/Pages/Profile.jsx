@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MainStyles, ColorPalate, myTheme } from '../Components/MainStyles';
 import { MuiThemeProvider } from '@material-ui/core'
+import {  GameCard } from '../Components/Cards';
 
 import { JsonQueryAuth, HostAddress, PostQueryAuth } from '../Services/Query'
 
@@ -24,14 +25,15 @@ export class Profile extends Component {
             password : '',
             new_password: '',
             msg_password : '',
-            msg_new_password: ''
+            msg_new_password: '',
+            games:[]
         }
     }
     handleChange = name => e => {
         this.setState({
             [name]: e.target.value
         })
-    }
+    } 
 
     componentDidMount() {
         this.load()
@@ -46,8 +48,11 @@ export class Profile extends Component {
                 image: `${HostAddress}user/${res.user.folder}/${res.user.image}`,
                 match: res.match,
                 level: res.level
-            })
-            
+            });
+            const res1 = await JsonQueryAuth('POST', 'info/getGames', {})
+            this.setState({
+                games: res1
+            });
         }
     }
     toggleChangePassword = () => {
@@ -104,6 +109,13 @@ export class Profile extends Component {
                                     this.state.isDataAvailable ? <InfoCard match={this.state.match} level={this.state.level} user={this.state.user} isJenuine={true}/> : ''
                                 }
                             </Grid>
+                        </Grid>
+                    </Paper>
+                    <Paper className='Block' style={MainStyles.block}>
+                        <h1><i className="fas fa-dice"></i>Game Library</h1>
+                        <br />
+                        <Grid container spacing={16}>
+                                {this.state.games.map(game => <GameCard key={game._id} game={game} load={this.load} />)} 
                         </Grid>
                     </Paper>
                     <Paper className='Block' style={MainStyles.block}>
