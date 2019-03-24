@@ -4,7 +4,7 @@ import { PostQuery, JsonQueryAdmin, HostAddress } from '../Services/Query'
 
 import { Grid, Paper, } from '@material-ui/core'
 import { Menu, MenuItem, MenuList, List, ListItem, ListItemText, Avatar } from '@material-ui/core'
-import { TextField, Button, LinearProgress } from '@material-ui/core'
+import { TextField, Button, LinearProgress,Checkbox } from '@material-ui/core'
 import ImageUploader from 'react-images-upload'
 
 
@@ -93,7 +93,8 @@ class TournamentMenu extends Component {
             msg_tournament_rules: '',
             msg_tournament_entry_fee: '',
             tournament_image:'',
-            custom_fields:[]
+            custom_fields:[],
+            is_bracket_needed:true
         }
     }
     componentDidMount() {
@@ -126,9 +127,15 @@ class TournamentMenu extends Component {
         });
     }
     handleChange = name => e => {
-        this.setState({
-            [name]: e.target.value
-        })
+        if(name == "is_bracket_needed") {
+            this.setState({
+                [name]: !this.state.is_bracket_needed
+            })
+        } else {
+            this.setState({
+                [name]: e.target.value
+            })
+        }
     }
     handleChangeCustomFields = (e,name,field_id) => {
         for(var i=0;i<this.state.custom_fields.length;i++) {
@@ -163,6 +170,8 @@ class TournamentMenu extends Component {
         fd.append('entry_fee', this.state.entry_fee)
         fd.append('game_id', this.state.game)
         fd.append('custom_fields',JSON.stringify(this.state.custom_fields))
+        fd.append('is_bracket_needed',this.state.is_bracket_needed)
+    
         const res = await PostQuery('admin/tournament/create', fd)
 
         // const res = await JsonQueryAdmin('post','admin/tournament/create',{
@@ -264,6 +273,13 @@ class TournamentMenu extends Component {
                                         >
                                             
                                         </TextField>
+                                    </Grid>
+                                    <Grid item xs={12} md={6} >
+                                        <Checkbox 
+                                            checked={this.state.is_bracket_needed}
+                                            onChange={this.handleChange('is_bracket_needed')}
+                                        > 
+                                        </Checkbox>Is Bracket Needed                     
                                     </Grid>
                                     <Grid item xs={12} md={12} >
                                         <TextField style={{ margin: '1vw', width: '90%' }}
@@ -379,6 +395,7 @@ class GameMenu extends Component {
         });
     }
     handleChange = name => e => {
+        
         this.setState({
             [name]: e.target.value
         })

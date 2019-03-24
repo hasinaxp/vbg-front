@@ -136,7 +136,8 @@ class TournamentInSide extends Component {
             capacity: '',
             tabId: 0,
             image:'',
-            custom_fields:[]
+            custom_fields:[],
+            is_bracket_needed:false
         }
     }
     componentDidMount() {
@@ -145,10 +146,10 @@ class TournamentInSide extends Component {
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/${this.state.tournament_id}`, {})
         if (res.status = 'ok') {
-            const { game, players, prize1, prize2, bet, capacity,image} = res
+            const { game, players, prize1, prize2, bet, capacity,image,is_bracket_needed} = res
             let rules = res.rules.split('\n')
             this.setState({
-                game, players, prize1, prize2, bet, capacity, rules,image
+                game, players, prize1, prize2, bet, capacity, rules,image,is_bracket_needed
             });
             if(res.custom_fields) {
                 try {
@@ -226,15 +227,17 @@ class TournamentInSide extends Component {
                                
                             </SwipeableViews>
                         </Paper>
+                        {this.state.is_bracket_needed !=false &&
                         <Paper style={{
                             ...MainStyles.paper, padding: 16, height: '60vh',
                             marginTop: 20, overflowX: 'auto',
                             display: 'flex', justifyContent: 'center', alignItems: 'center'
                         }}>
-                        {this.state.capacity > 0 && this.state.capacity <= this.state.players.length &&
+                        
                             <TournamentBracket tournament_id={this.props.tournament_id} />
-                        }
+                        
                         </Paper>
+                        }
                     </Grid>
                 </Grid>
             </React.Fragment>
