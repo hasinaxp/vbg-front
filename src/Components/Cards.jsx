@@ -116,9 +116,13 @@ export class TournamentCard extends Component {
             game: this.props.game,
             isParticipating: this.props.isParticipating,
             player_count: this.props.player_count,
-            tournament_id: this.props.tournament_id
-
+            tournament_id: this.props.tournament_id,
+            image:this.props.image,
+            current_available:this.props.current_available,
+            entry_fee:this.props.entry_fee,
+            prize:this.props.prize,
         }
+       
     }
     toggleJoin = () => {
         if (!this.state.isParticipating)
@@ -142,15 +146,31 @@ export class TournamentCard extends Component {
     }
 
     render() {
+
+        // if(this.props.custom_fields) {
+        //     try {
+        //         var custom_fields = JSON.parse(this.props.custom_fields);
+        //     } catch(e) {
+        //         var custom_fields = [];
+        //     }
+        // } else {
+        //     var custom_fields = [];
+        // }
         return (
             <React.Fragment>
                 <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
                     <div className={styles.gameCard} onClick={this.toggleJoin}>
                         <div>
-                            <img src={`${HostAddress}gameimg/${this.props.game.image}`} />
+                            <img src={(this.props.image && this.props.image!='') ? `${HostAddress}tournamentimg/${this.props.image}`:`${HostAddress}gameimg/${this.props.game.image}`} />
                         </div>
                         <h1>{this.props.game.name}  </h1>
-                        <h2>{this.props.game.platform ? 'mobile game' : 'pc game'} ({this.props.player_count} players)</h2>
+                        <h2>{this.props.game.platform ? 'mobile game' : 'pc game'}</h2>
+                        <h2>Slot : {this.props.current_available + '/' +this.props.player_count }</h2>
+                        <h2>Prize Amount : {this.props.prize }</h2>
+                        <h2>Entry Fees : {this.props.entry_fee }</h2>
+                        {/* {custom_fields.map((custom,index) =>
+                            <h2 key={custom.field_id}>{custom.label_name} : {custom.field_value }</h2>                        
+                        )} */}
                     </div>
                 </Grid>
                 <Dialog open={this.state.isOpen} onClose={this.toggleJoin}>

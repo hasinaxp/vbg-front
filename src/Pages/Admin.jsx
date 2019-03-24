@@ -92,7 +92,8 @@ class TournamentMenu extends Component {
             msg_tournament_balance: '',
             msg_tournament_rules: '',
             msg_tournament_entry_fee: '',
-            tournament_image:''
+            tournament_image:'',
+            custom_fields:[]
         }
     }
     componentDidMount() {
@@ -129,6 +130,16 @@ class TournamentMenu extends Component {
             [name]: e.target.value
         })
     }
+    handleChangeCustomFields = (e,name,field_id) => {
+        for(var i=0;i<this.state.custom_fields.length;i++) {
+            if(this.state.custom_fields[i].field_id == field_id) {
+                this.state.custom_fields[i][name] = e.target.value;
+            }
+        }
+        this.setState({
+            custom_fields: this.state.custom_fields
+        })
+    }
     onDrop = picture => {
         this.setState({
             tournament_image: picture,
@@ -151,6 +162,7 @@ class TournamentMenu extends Component {
         fd.append('player_count', this.state.player_count)
         fd.append('entry_fee', this.state.entry_fee)
         fd.append('game_id', this.state.game)
+        fd.append('custom_fields',JSON.stringify(this.state.custom_fields))
         const res = await PostQuery('admin/tournament/create', fd)
 
         // const res = await JsonQueryAdmin('post','admin/tournament/create',{
@@ -176,6 +188,12 @@ class TournamentMenu extends Component {
             });
             this.load();
         }
+    }
+    addFields = e => {
+        this.state.custom_fields.push({field_id: Date.now()});
+        this.setState ({
+            custom_fields:this.state.custom_fields
+        });
     }
 
     render() {
@@ -258,14 +276,36 @@ class TournamentMenu extends Component {
                                             error={this.state.msg_tournament_rules.length > 0}
                                         />
                                     </Grid>
+                                    {this.state.custom_fields.map(field => (
+                                        <Grid item xs={12} md={12} key={field.field_id}>
+                                            <TextField style={{ margin: '1vw', width: '40%' }}
+                                                label="Field Label"
+                                                value={field.label_name}
+                                                onChange={(e) => this.handleChangeCustomFields(e,'label_name',field.field_id)}
+                                            >
+                                            </TextField>
+                                            <TextField style={{ margin: '1vw', width: '40%' }}
+                                                label="Field Value"
+                                                value={field.value}
+                                                onChange={(e) =>this.handleChangeCustomFields(e,'field_value',field.field_id)}
+                                            >
+                                            </TextField>
+                                        </Grid>
+                                    ))}
+                                    <Grid item xs={12}>
+                                        <Button onClick={(e) => this.addFields(e)} variant='outlined' style={{ margin: '1vw', width: '90%' }}>
+                                            <span> <i className="fas fa-plus"></i>Add Custom Fields</span>
+                                        </Button>
+                                    </Grid>
                                     <Grid item xs={12} md={6}>
                                         <Button style={{ margin: '1vw', width: '90%' }}>
                                             <input type='file'
                                                 style={{ width: '100%', opacity: 0, position: 'absolute' }}
                                                 onChange={this.onFileUpload} />
                                             <span><i className="fas fa-upload"></i> Upload Tournament Image</span>
-                                        </Button>
+                                        </Button> 
                                     </Grid>
+                                    
                                     <Grid item xs={12}>
                                         <Button type='submit' variant='outlined' style={{ margin: '1vw', width: '90%' }}>
                                             <span><i className="fas fa-upload"></i> Add Tournament</span>

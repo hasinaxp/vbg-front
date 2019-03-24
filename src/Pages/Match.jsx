@@ -40,7 +40,8 @@ export class Match extends Component {
             chatVisible: false,
             is_c : 0,
             isAdmitDefeat : false,
-            isClaimVectory : false
+            isClaimVectory : false,
+            image:''
         }
     }
     componentDidMount() {
@@ -50,12 +51,12 @@ export class Match extends Component {
         
         const res = await JsonQueryAuth('post', `match/m/${this.state.match_id}`, {})
         if (res.status === 'ok') {
-            const { game, challenger, challenged, chat_id, sender, contact_string, time, bet } = res;
+            const { game, challenger, challenged, chat_id, sender, contact_string, time, bet,image } = res;
             const myId = getCookie('logauti')
             let is_c = 0
             if(myId === challenger._id) is_c = 1;
             this.setState({
-                game, challenger, challenged, chat_id, sender, contact_string, time, bet, is_c, chatVisible: true
+                game, challenger, challenged, chat_id, sender, contact_string, time, bet, is_c, chatVisible: true,image
             });
         }
     }
@@ -106,7 +107,7 @@ export class Match extends Component {
                                     <CardActionArea>
                                         <CardMedia
                                             style={{ height: 200 }}
-                                            image={`${HostAddress}gameimg/${this.state.game.image}`}
+                                            image={(this.state.image && this.state.image!='') ? `${HostAddress}tournamentimg/${this.state.image}`:`${HostAddress}gameimg/${this.state.game.image}`}
                                             title={this.state.game.name}
                                         />
                                         <CardContent style={{ ...MainStyles.paper, color: ColorPalate.greenLight }}>

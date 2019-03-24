@@ -191,7 +191,9 @@ export class Dashboard extends Component {
                                     bet={m.bet}
                                     game={m.game}
                                     opponent={m.opponent}
+                                    image={m.image}
                                     id={m._id}
+                                    image={m.image}
                                     history={this.props.history}
                                 />)}
                             </Grid>

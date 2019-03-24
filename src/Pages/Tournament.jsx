@@ -83,6 +83,11 @@ class TournamentOutSide extends Component {
                                     player_count={tour.player_count}
                                     load={this.load}
                                     game={tour.game}
+                                    image={tour.image}
+                                    current_available={tour.players.length}
+                                    entry_fee={tour.entry_fee}
+                                    custom_fields={tour.custom_fields}
+                                    prize={tour.balance}
                                     enterTournament={this.props.enterTournament}
                                     tournament_id={tour._id} />)
                             }
@@ -99,8 +104,13 @@ class TournamentOutSide extends Component {
                                 this.state.not_participating.map(tour => <TournamentCard key={tour._id}
                                     isParticipating={false}
                                     player_count={tour.player_count}
+                                    image={tour.image}
                                     load={this.load}
                                     game={tour.game}
+                                    current_available={tour.players.length}
+                                    entry_fee={tour.entry_fee}
+                                    custom_fields={tour.custom_fields}
+                                    prize={tour.balance}
                                     enterTournament={this.props.enterTournament}
                                     tournament_id={tour._id} />)
                             }
@@ -124,7 +134,9 @@ class TournamentInSide extends Component {
             bet: '',
             rules: [],
             capacity: '',
-            tabId: 0
+            tabId: 0,
+            image:'',
+            custom_fields:[]
         }
     }
     componentDidMount() {
@@ -133,18 +145,25 @@ class TournamentInSide extends Component {
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/${this.state.tournament_id}`, {})
         if (res.status = 'ok') {
-            const { game, players, prize1, prize2, bet, capacity,} = res
+            const { game, players, prize1, prize2, bet, capacity,image} = res
             let rules = res.rules.split('\n')
             this.setState({
-                game, players, prize1, prize2, bet, capacity, rules
-            })
+                game, players, prize1, prize2, bet, capacity, rules,image
+            });
+            if(res.custom_fields) {
+                try {
+                    let custom_fields = JSON.parse(res.custom_fields);
+                    this.setState({custom_fields:custom_fields});
+                } catch(e) {
+                }  
+            }
         }
     }
     changeTab = (event, value) => {
         this.setState({ tabId: value })
     }
     handleChangeIndex = (index) => {
-        if(index >= 0 && index <= 1)
+        // if(index >= 0 && index <= 1)
         this.setState({ tabId: index })
     }
     render() {
@@ -156,7 +175,7 @@ class TournamentInSide extends Component {
                             <CardActionArea>
                                 <CardMedia
                                     style={{ height: 200 }}
-                                    image={`${HostAddress}gameimg/${this.state.game.image}`}
+                                    image={(this.state.image && this.state.image!='') ? `${HostAddress}tournamentimg/${this.state.image}`:`${HostAddress}gameimg/${this.state.game.image}`}
                                     title={this.state.game.name}
                                 />
                                 <CardContent style={{ ...MainStyles.paper, color: ColorPalate.greenLight }}>
@@ -172,6 +191,10 @@ class TournamentInSide extends Component {
                                 <Tabs value={this.state.tabId} onChange={this.changeTab} indicatorColor='primary' textColor='primary'>
                                     <Tab value={0} label="INFO" style={{ color: this.state.tabId === 0 ? ColorPalate.greenLight : ColorPalate.green }} />
                                     <Tab value={1} label="RULES" style={{ color: this.state.tabId === 1 ? ColorPalate.greenLight : ColorPalate.green }} />
+                                    
+                                    {this.state.custom_fields.map((custom,index) => 
+                                        <Tab key={custom.field_id} value={index + 2} label={custom.label_name} style={{ color: this.state.tabId === custom.field_id ? ColorPalate.greenLight : ColorPalate.green }} />
+                                    )}
                                 </Tabs>
                             </AppBar>
                             <SwipeableViews
@@ -195,6 +218,12 @@ class TournamentInSide extends Component {
                             <div style={{color: ColorPalate.green, padding: 8}}>
                             {this.state.rules.map( (r, i) => (<div key={i}>{r}</div>))}
                             </div>
+                            {this.state.custom_fields.map((custom,index) => 
+                                <div style={{color: ColorPalate.green, padding: 8}}>
+                                {custom.field_value}
+                                </div>
+                             )}
+                               
                             </SwipeableViews>
                         </Paper>
                         <Paper style={{
@@ -202,7 +231,9 @@ class TournamentInSide extends Component {
                             marginTop: 20, overflowX: 'auto',
                             display: 'flex', justifyContent: 'center', alignItems: 'center'
                         }}>
+                        {this.state.capacity > 0 && this.state.capacity <= this.state.players.length &&
                             <TournamentBracket tournament_id={this.props.tournament_id} />
+                        }
                         </Paper>
                     </Grid>
                 </Grid>
