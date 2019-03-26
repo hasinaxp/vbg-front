@@ -1,10 +1,10 @@
 {
-  "main.css": "/static/css/main.cbdcbe1c.chunk.css",
-  "main.js": "/static/js/main.bc3637f7.chunk.js",
-  "main.js.map": "/static/js/main.bc3637f7.chunk.js.map",
+  "main.css": "/static/css/main.72b0c6a4.chunk.css",
+  "main.js": "/static/js/main.63f4ac25.chunk.js",
+  "main.js.map": "/static/js/main.63f4ac25.chunk.js.map",
   "static/css/1.331553c8.chunk.css": "/static/css/1.331553c8.chunk.css",
-  "static/js/1.bf41fc02.chunk.js": "/static/js/1.bf41fc02.chunk.js",
-  "static/js/1.bf41fc02.chunk.js.map": "/static/js/1.bf41fc02.chunk.js.map",
+  "static/js/1.e598bb5b.chunk.js": "/static/js/1.e598bb5b.chunk.js",
+  "static/js/1.e598bb5b.chunk.js.map": "/static/js/1.e598bb5b.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.229c360f.js",
   "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
   "static/media/default.jpg": "/static/media/default.fd55f441.jpg",
@@ -15,9 +15,9 @@
   "static/media/vbg1.png": "/static/media/vbg1.75071ebe.png",
   "static/media/sword.svg": "/static/media/sword.c7cab733.svg",
   "static/media/App.css": "/static/media/vbg-back.1f26fa90.png",
+  "static/css/main.72b0c6a4.chunk.css.map": "/static/css/main.72b0c6a4.chunk.css.map",
   "static/css/1.331553c8.chunk.css.map": "/static/css/1.331553c8.chunk.css.map",
-  "static/css/main.cbdcbe1c.chunk.css.map": "/static/css/main.cbdcbe1c.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.2578c50d53b6d290611f4d29e8f4f594.js": "/precache-manifest.2578c50d53b6d290611f4d29e8f4f594.js",
+  "precache-manifest.ec5c44a715ac893a59b4480155e5dd7c.js": "/precache-manifest.ec5c44a715ac893a59b4480155e5dd7c.js",
   "service-worker.js": "/service-worker.js"
 }
