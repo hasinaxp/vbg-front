@@ -87,11 +87,13 @@ class TournamentMenu extends Component {
             player_count: 4,
             balance: 10,
             rules: '',
+            tournament_name:'',
             msg_tournament_game_id: '',
             msg_tournament_player_count: '',
             msg_tournament_balance: '',
             msg_tournament_rules: '',
             msg_tournament_entry_fee: '',
+            msg_tournament_tournament_name:'',
             tournament_image:'',
             custom_fields:[],
             is_bracket_needed:true
@@ -171,7 +173,9 @@ class TournamentMenu extends Component {
         fd.append('game_id', this.state.game)
         fd.append('custom_fields',JSON.stringify(this.state.custom_fields))
         fd.append('is_bracket_needed',this.state.is_bracket_needed)
-    
+        fd.append('tournament_name',this.state.tournament_name)
+
+        
         const res = await PostQuery('admin/tournament/create', fd)
 
         // const res = await JsonQueryAdmin('post','admin/tournament/create',{
@@ -193,7 +197,8 @@ class TournamentMenu extends Component {
                 player_count: 4,
                 balance: 0,
                 rules: '',
-                entry_fee:''
+                entry_fee:'',
+                tournament_name:''
             });
             this.load();
         }
@@ -214,7 +219,19 @@ class TournamentMenu extends Component {
                             <h2>Add Tournament</h2>
                             {this.state.isCalling ? <LinearProgress /> : ''}
                             <form onSubmit={this.addTournament} encType="multipart/form-data">
+                           
                                 <Grid container alignItems='center' justify='center'>
+                                <Grid item xs={12} md={6} >
+                                        <TextField style={{ margin: '1vw', width: '90%' }}
+                                            label="Tournament Name"
+                                            value={this.state.tournament_name}
+                                            onChange={this.handleChange('tournament_name')}
+                                            helperText={this.state.msg_tournament_tournament_name}
+                                            error={this.state.msg_tournament_tournament_name.length > 0}
+                                        >
+                                            
+                                        </TextField>
+                                    </Grid>
                                     <Grid item xs={12} md={6} >
                                         <TextField style={{ margin: '1vw', width: '90%' }}
                                             select

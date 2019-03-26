@@ -82,6 +82,7 @@ class TournamentOutSide extends Component {
                                     isParticipating={true}
                                     player_count={tour.player_count}
                                     load={this.load}
+                                    tournament_name={tour.tournament_name}
                                     game={tour.game}
                                     image={tour.image}
                                     current_available={tour.players.length}
@@ -106,6 +107,7 @@ class TournamentOutSide extends Component {
                                     player_count={tour.player_count}
                                     image={tour.image}
                                     load={this.load}
+                                    tournament_name={tour.tournament_name}
                                     game={tour.game}
                                     current_available={tour.players.length}
                                     entry_fee={tour.entry_fee}
@@ -130,6 +132,7 @@ class TournamentInSide extends Component {
             game: {},
             players: [],
             prize1: '',
+            tournament_name:'',
             prize2: '',
             bet: '',
             rules: [],
@@ -146,10 +149,10 @@ class TournamentInSide extends Component {
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/${this.state.tournament_id}`, {})
         if (res.status = 'ok') {
-            const { game, players, prize1, prize2, bet, capacity,image,is_bracket_needed} = res
+            const { tournament_name,game, players, prize1, prize2, bet, capacity,image,is_bracket_needed} = res
             let rules = res.rules.split('\n')
             this.setState({
-                game, players, prize1, prize2, bet, capacity, rules,image,is_bracket_needed
+                tournament_name,game, players, prize1, prize2, bet, capacity, rules,image,is_bracket_needed
             });
             if(res.custom_fields) {
                 try {
@@ -180,7 +183,7 @@ class TournamentInSide extends Component {
                                     title={this.state.game.name}
                                 />
                                 <CardContent style={{ ...MainStyles.paper, color: ColorPalate.greenLight }}>
-                                    <h2>{this.state.game.name}</h2>
+                                    <h2>{this.state.tournament_name || this.state.game.name}</h2>
                                 </CardContent>
                             </CardActionArea>
                         </Card>
@@ -205,6 +208,8 @@ class TournamentInSide extends Component {
                             <Grid container style={{padding: 8}}>
                                 <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Tournament Id</Grid>
                                 <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.tournament_id}</Grid>
+                                <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Game</Grid>
+                                <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.game.name}</Grid>
                                 <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Entry Fee</Grid>
                                 <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.bet} bp</Grid>
                                 <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>First Prize</Grid>

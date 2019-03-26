@@ -121,18 +121,26 @@ export class TournamentCard extends Component {
             current_available:this.props.current_available,
             entry_fee:this.props.entry_fee,
             prize:this.props.prize,
+            tournament_name:this.props.tournament_name,
+            isguest:this.props.isguest || false
         }
        
     }
     toggleJoin = () => {
-        if (!this.state.isParticipating)
-            this.setState({
-                isOpen: !this.state.isOpen,
-            })
-        else {
-            console.log(this.state.tournament_id)
-            this.props.enterTournament(this.state.tournament_id)
+        if(!this.state.isguest) {
+            if (!this.state.isParticipating)
+                this.setState({
+                    isOpen: !this.state.isOpen,
+                })
+            else {
+                this.props.enterTournament(this.state.tournament_id)
+            }
+        } else {
+            this.props.onClick();
         }
+    }
+    viewTournament = (tournament_id) => {
+        this.props.enterTournament(tournament_id)
     }
     joinTournament = id => async e => {
         console.log(id)
@@ -163,11 +171,15 @@ export class TournamentCard extends Component {
                         <div>
                             <img src={(this.props.image && this.props.image!='') ? `${HostAddress}tournamentimg/${this.props.image}`:`${HostAddress}gameimg/${this.props.game.image}`} />
                         </div>
-                        <h1>{this.props.game.name}  </h1>
-                        <h2>{this.props.game.platform ? 'mobile game' : 'pc game'}</h2>
-                        <h2>Slot : {this.props.current_available + '/' +this.props.player_count }</h2>
-                        <h2>Prize Amount : {this.props.prize }</h2>
-                        <h2>Entry Fees : {this.props.entry_fee }</h2>
+                        <h1>{this.props.tournament_name || this.props.game.name}  </h1>
+                        <h3>
+                            Console {this.props.game.platform ? 'mobile game ' : 'pc game'}
+                            Slot {this.props.current_available + '/' +this.props.player_count }
+                        </h3>
+                        <h3>
+                            Prize {this.props.prize || ' - '} 
+                            Entry {this.props.entry_fee || 'Free' }
+                        </h3>
                         {/* {custom_fields.map((custom,index) =>
                             <h2 key={custom.field_id}>{custom.label_name} : {custom.field_value }</h2>                        
                         )} */}
@@ -181,6 +193,9 @@ export class TournamentCard extends Component {
                     <DialogActions>
                         <Button style={{ color: ColorPalate.green, fontWeight: 'bolder' }} onClick={this.joinTournament(this.props.tournament_id)}>
                             Join
+                        </Button>
+                        <Button style={{ color: ColorPalate.green, fontWeight: 'bolder' }} onClick={(e) => this.viewTournament(this.props.tournament_id)}>
+                            Show Details
                         </Button>
                     </DialogActions>
                 </Dialog>

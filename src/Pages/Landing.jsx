@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { ColorPalate, myTheme } from '../Components/MainStyles';
 import { MuiThemeProvider } from '@material-ui/core'
+import { TournamentCard } from '../Components/Cards';
 
-import { JsonQuery, SetCookie } from '../Services/Query'
+import { JsonQuery, SetCookie,JsonQueryAuth, HostAddress } from '../Services/Query'
 import { Grid, Drawer, TextField, LinearProgress } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-
 import './Landing.css';
 
 
@@ -210,7 +210,8 @@ export class Landing extends Component {
         super(props);
         this.state = {
             isRegister: false,
-            isSignIn: false
+            isSignIn: false,
+            tournaments:[]
         }
     }
     toggleRegister = () => {
@@ -227,9 +228,23 @@ export class Landing extends Component {
        // const res = await JsonQueryAuth('POST', 'info/getUser', { });
     }
     componentDidMount() {
-        document.body.className="body-a" 
+        document.body.className="body-a";
+        this.load();
+    }
+    load = async () => {
+        const res = await JsonQueryAuth('post', 'tournament/public/latest', {limit:10})
+        this.setState({
+            tournaments: res
+        });         
     }
     render() {
+        var settings = {
+            dots: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1
+          };
         return (
             <React.Fragment>
                 <div className='body1'>
@@ -298,7 +313,30 @@ export class Landing extends Component {
                                 </Grid>
                             </div>
                         </div>
-
+                        <div id="slide3" className="slide">
+                        <div className="title-y">
+                                <h1>Ongoing Tournamanets</h1>
+                                <Grid container spacing={16}>
+                                    {
+                                        this.state.tournaments.map(tour => <TournamentCard key={tour._id}
+                                            onClick={this.toggleSignIn}
+                                            isguest={true}
+                                            isParticipating={false}
+                                            player_count={tour.player_count}
+                                            image={tour.image}
+                                            load={this.load}
+                                            tournament_name={tour.tournament_name}
+                                            game={tour.game}
+                                            current_available={tour.players.length}
+                                            entry_fee={tour.entry_fee}
+                                            custom_fields={tour.custom_fields}
+                                            prize={tour.balance}
+                                            enterTournament={this.props.enterTournament}
+                                            tournament_id={tour._id} />)
+                                    }
+                                </Grid>
+                        </div>
+                        </div>
                         <div id="slide1" className="slide">
                             <div className="title-x">
                                 <h1>How It Works</h1>
@@ -351,7 +389,15 @@ export class Landing extends Component {
                         </div>
 
                         <div id="slide4" className="slide header">
-                            <h1>The End</h1>
+                            <a href='/about'>About us</a>
+                            <br/>
+                            <a href='/terms'>Terms & conditions</a>
+                            <br/>
+                            <a href='/faq'>FAQ</a>
+                            <br/>
+                            <a href='/faq'>Contact us</a>
+                            <br/>
+                            <a href='/privacy'>privacy policy</a>
                         </div>
                     </div>
                 </div>
