@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { PostQuery, JsonQueryAdmin, HostAddress } from '../Services/Query'
 
 import { Grid, Paper, } from '@material-ui/core'
-import { Menu, MenuItem, MenuList, List, ListItem, ListItemText, Avatar } from '@material-ui/core'
+import { Menu, MenuItem, MenuList, List, ListItem, ListItemText, Avatar,Select,Input,InputLabel } from '@material-ui/core'
 import { TextField, Button, LinearProgress,Checkbox } from '@material-ui/core'
 import ImageUploader from 'react-images-upload'
 
@@ -32,6 +32,9 @@ export class Admin extends Component {
             case 'tournaments':
             panel = <TournamentMenu />
             break;
+            case 'assign player':
+            panel = <AssignMenu />
+            break;
         }
 
         return (
@@ -45,6 +48,9 @@ export class Admin extends Component {
                                 </MenuItem>
                                 <MenuItem >
                                     <ListItemText inset primary="tournaments" onClick={this.setActive('tournaments')}/>
+                                </MenuItem>
+                                <MenuItem >
+                                    <ListItemText inset primary="assign player" onClick={this.setActive('assign player')}/>
                                 </MenuItem>
                                 <MenuItem >
                                     <ListItemText inset primary="descitions" />
@@ -376,6 +382,195 @@ class TournamentMenu extends Component {
 
 
 
+class AssignMenu extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isCalling: false,
+            selected_players:[],
+            userList:[],
+            tournaments_yet_to_start: [],
+            tournament_id:'',
+            msg_tournament_id: '',
+            name : [],
+            selected_tournament:{}
+        }
+    }
+    resetForm() {
+        this.setState({
+            isCalling: false,
+            selected_players:[],
+            tournaments_yet_to_start: [],
+            tournament_id:'',
+            msg_tournament_id: '',
+            name : [],
+            selected_tournament:{}
+        });
+        this.load();
+    }
+    componentDidMount() {
+       this.load();
+       this.loadUsers();
+    }
+    clearMsg() {
+        this.setState({ msg_tournament_id:''});
+    }
+    addPlayer = async e => {
+        e.preventDefault();
+        if(this.state.selected_players.length == 0 ){
+            alert("Please select players");
+            return;
+        }
+        if(this.state.selected_tournament.player_count < this.state.selected_players.length) {
+            alert("Maximum player count for this tournament is "+this.state.selected_tournament.player_count);
+            return false;
+        }
+        this.clearMsg();
+        this.setState({ isCalling: true });
+        const res = await JsonQueryAdmin('post', `admin/addPlayer`, { tournament_id: this.state.tournament_id,players:this.state.selected_players })
+        this.setState({
+            isCalling: false
+        });
+        if (res.errors) {
+            res.errors.map(err => {
+                const fieldName = 'msg_' + err.param
+                this.setState({ [fieldName]: err.msg })
+            });
+        } else {
+            if (res.status === 'ok') {
+                alert(res.msg);
+                this.resetForm();
+            } else {
+                
+                alert("Tournament is not valid/Capacity exceeds");
+            }
+        }
+    }
+    handleChange = name => e => {
+        if(name == 'tournament_id') {
+            this.setState({selected_players:[],selected_tournament:{}});
+            for(var t=0;t<this.state.tournaments_yet_to_start.length;t++) {
+                 if(this.state.tournaments_yet_to_start[t]._id == e.target.value) {
+                     this.setState({selected_tournament:this.state.tournaments_yet_to_start[t]});
+                     if(this.state.tournaments_yet_to_start[t].players.length >0) {
+                         this.setState({selected_players:this.state.tournaments_yet_to_start[t].players});
+                     }
+                    break;
+                }
+        }
+        }
+        this.setState({
+            [name]: e.target.value
+        })
+    }
+    load = async () => {
+        const res = await JsonQueryAdmin('post', 'admin/tournament', {})
+        console.log(res)
+        if (res.status === 'ok') {
+
+            this.setState({
+               tournaments_yet_to_start: res.tournaments_yet_to_start
+            })
+        }
+    }
+    loadUsers = async () => {
+        const res = await JsonQueryAdmin('get', 'admin/listusers')
+        console.log(res)
+        this.setState({
+            userList: res
+        });
+        
+    }
+    getUser = selected => {
+        var users = '';
+        for(var i=0;i<this.state.userList.length;i++) {
+            if(selected.indexOf(this.state.userList[i]._id) > -1 ) {
+                users +=  this.state.userList[i].full_name+'('+this.state.userList[i].email+')'+ ' ';
+            }
+        }
+        return users;
+    }
+
+    render() {
+
+        return (
+            <React.Fragment>
+                <Grid container alignItems='center' justify='center'>
+                    <Grid item xs={12}>
+                        <Paper style={{ margin: '20px', padding: '20px' }}>
+                            <h2>Add Player</h2>
+                            {this.state.isCalling ? <LinearProgress /> : ''}
+                            <form onSubmit={this.addPlayer} >
+                           
+                                <Grid container alignItems='center' justify='center'>
+                                    <Grid item xs={12} md={12} >
+                                        <TextField style={{ margin: '1vw', width: '90%' }}
+                                            select
+                                            label="Select Tournament"
+                                            value={this.state.tournament_id}
+                                            onChange={this.handleChange('tournament_id')}
+                                            helperText={this.state.msg_tournament_id}
+                                            error={this.state.msg_tournament_id.length > 0}
+                                        >
+                                            {this.state.tournaments_yet_to_start.map(option => (
+                                                <MenuItem key={option._id} value={option._id}>
+                                                    {option.tournament_name || option.game.name}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        {this.state.selected_tournament && this.state.selected_tournament._id &&
+                                            <ListItem > 
+                                                <ListItemText
+                                                    primary={<span> {'Current Slot '+this.state.selected_tournament.players.length +' / ' + this.state.selected_tournament.player_count } </span>}
+                                                    secondary={<span>{'Game ' + this.state.selected_tournament.game.name}</span>} />
+                                            </ListItem>
+                                        }
+                                    </Grid>
+                                    <Grid item xs={12} md={12} >
+                                        <ListItem > 
+                                                <ListItemText
+                                                    primary={<span> {'Select Players' } </span>}
+                                                />
+                                            </ListItem>
+                                        <Select style={{ margin: '1vw', width: '90%' }}
+                                            multiple
+                                            value={this.state.selected_players}
+                                            onChange={this.handleChange('selected_players')}
+                                            renderValue={selected => this.getUser(selected)}
+                                        >
+                                        <MenuItem disabled value="">
+                                            <em>Select Players</em>
+                                        </MenuItem>
+                                            {this.state.userList.map(user => (
+                                                <MenuItem key={user._id} value={user._id}>
+                                                    <Checkbox checked={this.state.selected_players.indexOf(user._id) > -1}/>
+                                                    <ListItemText primary={<span> {user.full_name + "(" +user.email+")"} </span>} />
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                        {this.state.selected_players && this.state.selected_players.length > 0 &&
+                                            <ListItem > 
+                                                <ListItemText
+                                                    primary={<span> {'Total Selected '+this.state.selected_players.length } </span>}
+                                                />
+                                            </ListItem>
+                                        }
+                                    </Grid>                              
+                                    
+                                    <Grid item xs={12}>
+                                        <Button type='submit' variant='outlined' style={{ margin: '1vw', width: '90%' }}>
+                                            <span><i className="fas fa-upload"></i>Assign Player</span>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </React.Fragment>
+        )
+    }
+}
 
 
 
@@ -497,6 +692,7 @@ class GameMenu extends Component {
                                         />
                                     </Grid>
                                     <Grid item xs={12} md={6} >
+                                  
                                         <TextField style={{ margin: '1vw', width: '90%' }}
                                             id="standard-select-bets"
                                             select

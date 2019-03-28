@@ -183,7 +183,7 @@ class GameBtn extends Component {
             this.toggleChallenge();
             this.props.load()
         } else {
-            alert(res.errors[0]);
+            alert(res.errors[0].msg);
         }
     }
     render() {

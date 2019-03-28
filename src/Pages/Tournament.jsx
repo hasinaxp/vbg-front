@@ -12,7 +12,7 @@ import { Paper, Card, CardMedia, CardContent, CardActionArea } from '@material-u
 import { Tab, Tabs, AppBar } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import { List, ListItem, ListSubheader, } from '@material-ui/core';
-import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary,Button } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 export class Tournament extends Component {
@@ -140,7 +140,8 @@ class TournamentInSide extends Component {
             tabId: 0,
             image:'',
             custom_fields:[],
-            is_bracket_needed:false
+            is_bracket_needed:false,
+            isPlaying:true
         }
     }
     componentDidMount() {
@@ -149,10 +150,10 @@ class TournamentInSide extends Component {
     load = async () => {
         const res = await JsonQueryAuth('post', `tournament/${this.state.tournament_id}`, {})
         if (res.status = 'ok') {
-            const { tournament_name,game, players, prize1, prize2, bet, capacity,image,is_bracket_needed} = res
+            const { tournament_name,game, players, prize1, prize2, bet, capacity,image,is_bracket_needed,isPlaying} = res
             let rules = res.rules.split('\n')
             this.setState({
-                tournament_name,game, players, prize1, prize2, bet, capacity, rules,image,is_bracket_needed
+                tournament_name,game, players, prize1, prize2, bet, capacity, rules,image,is_bracket_needed,isPlaying
             });
             if(res.custom_fields) {
                 try {
@@ -161,6 +162,18 @@ class TournamentInSide extends Component {
                 } catch(e) {
                 }  
             }
+        }
+    }
+    joinTournament = id => async e => {
+        console.log(id)
+        const res = await JsonQueryAuth('post', `tournament/join/`, { tournament_id: this.state.tournament_id })
+        if (res.status === 'ok') {
+            alert("You are successfull joned to this tournament");
+            this.setState({isPlaying:true});
+            this.load();
+        } else {
+            alert("Tournament is not valid/capcity exceeded");
+            this.setState({isPlaying:true});
         }
     }
     changeTab = (event, value) => {
@@ -220,6 +233,13 @@ class TournamentInSide extends Component {
                                 <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.capacity}</Grid>
                                 <Grid item xs={12} md={5} style={{color: ColorPalate.greenLight}}>Joined players</Grid>
                                 <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>{this.state.players.length}</Grid>
+                                {!this.state.isPlaying &&
+                                    <Grid item xs={12} md={7} style={{color: ColorPalate.green}}>
+                                        <Button style={{ color: ColorPalate.blue, fontWeight: 'bolder' }} onClick={this.joinTournament(this.state.tournament_id)}>
+                                            Join Tournament
+                                        </Button> 
+                                    </Grid>
+                                }
                             </Grid>
                             <div style={{color: ColorPalate.green, padding: 8}}>
                             {this.state.rules.map( (r, i) => (<div key={i}>{r}</div>))}
