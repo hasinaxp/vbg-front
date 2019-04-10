@@ -167,15 +167,15 @@ export class TournamentCard extends Component {
 
     render() {
 
-        // if(this.props.custom_fields) {
-        //     try {
-        //         var custom_fields = JSON.parse(this.props.custom_fields);
-        //     } catch(e) {
-        //         var custom_fields = [];
-        //     }
-        // } else {
-        //     var custom_fields = [];
-        // }
+        if(this.props.custom_fields) {
+            try {
+                var custom_fields = JSON.parse(this.props.custom_fields);
+            } catch(e) {
+                var custom_fields = [];
+            }
+        } else {
+            var custom_fields = [];
+        }
         return (
             <React.Fragment>
                 <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
@@ -201,10 +201,13 @@ export class TournamentCard extends Component {
                             <div className={styles.secondpart}>
                             <strong>Entry:- </strong>  {this.props.entry_fee || 'Free' }
                             </div>
+                            {custom_fields.map((custom,index) =>
+                                <div className={(index%2 == 0)?styles.firstpart:styles.secondpart}  key={custom.field_id}>
+                                    <strong>{custom.label_name}:- </strong> {custom.field_value }
+                                </div>
+                            )}
                         </h3>
-                        {/* {custom_fields.map((custom,index) =>
-                            <h2 key={custom.field_id}>{custom.label_name} : {custom.field_value }</h2>                        
-                        )} */}
+                        
                          </div>
                     </div>
                 </Grid>
