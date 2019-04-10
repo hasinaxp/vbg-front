@@ -407,8 +407,9 @@ const InfoCard = ({ match, level, user, isJenuine }) => {
     return (
         <Paper style={{ backgroundColor: '#444', padding: 16, color: ColorPalate.greenLight }}>
             <Grid container>
+            
                 {Info.map(inf => (
-                    <Grid item container xs={12} key={inf[0]}>
+                    <Grid item container xs={12}>
                         <Grid item xs={12} md={5} style={MainStyles.heading}>{`${inf[0].replace(/_/g, " ")} :`}</Grid>
                         <Grid item xs={12} md={7} style={MainStyles.text}>{inf[1]}</Grid>
                     </Grid>

@@ -1,7 +1,8 @@
 // const config = require('./config.json')(process.env.REACT_APP_ENV || 'dev'); 
 import {config} from "./config";
-let constant = config[process.env.REACT_APP_ENV || 'dev'];
+let constant = config[process.env.REACT_APP_ENV || 'prod'];
 export const HostAddress = constant.host; 
+
 
 export const JsonQuery = async (type, url, info) => {
     const settings = {

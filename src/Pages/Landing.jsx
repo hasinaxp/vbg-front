@@ -255,12 +255,12 @@ export class Landing extends Component {
                         <SignIn history={this.props.history} />
                     </Drawer>
                     <div className='Page'>
-                        <div id="title" className="slide header">
+                        <div id="title" className="slide header container">
                             <div>
                                 <Grid container alignItems='center' justify='center'>
                                     <Grid item xs={12}>
                                         <h1 style={{ color: ColorPalate.greenLight, fontSize: '2.4rem' }}>Virtual Battle Ground</h1>
-                                        <h1 style={{ color: '#bbb', fontSize: '1.4rem' }}>Start making money through competetive gaming</h1>
+                                        <h1 style={{ color: '#fff', fontSize: '1.4rem' }}>Start making money through competetive gaming</h1>
                                     </Grid>
                                     <br /><br />
                                     <Grid item xs={12} spacing={16} container alignItems='center' justify='center'>
@@ -314,7 +314,7 @@ export class Landing extends Component {
                             </div>
                         </div>
                         <div id="slide3" className="slide">
-                        <div className="title-y">
+                        <div className="title-y container">
                                 <h1>Ongoing Tournamanets</h1>
                                 <Grid container spacing={16}>
                                     {
@@ -338,24 +338,27 @@ export class Landing extends Component {
                         </div>
                         </div>
                         <div id="slide1" className="slide">
-                            <div className="title-x">
+                            <div className="title-x container">
                                 <h1>How It Works</h1>
                                 <p>Compete in gaming tournaments and head-to-head challenges with gamers of every skill level on Mobile, Playstation, Xbox and PC. Participate in free-to-play or cash tournaments and Win Big at Virtual Battle Ground.</p>
                             </div>
                         </div>
 
                         <div id="slide2" className="slide">
-                            <div className="title">
-                                <h1>Participate in Live Tournaments To Earn More</h1>
-                                <p>Lorem ipsum dolor sit amet, in velit iudico mandamus sit, persius dolorum in per, postulant mnesarchum cu nam. Malis movet ornatus id vim, feugait detracto est ea, eam eruditi conceptam in. Ne sit explicari interesset. Labores perpetua cum at. Id viris docendi denique vim.</p>
-                            </div>
+                            <div className="container"> 
+                                <div className="title">
+                                    <h1>Participate in Live Tournaments To Earn More</h1>
+                                    <p>Lorem ipsum dolor sit amet, in velit iudico mandamus sit, persius dolorum in per, postulant mnesarchum cu nam. Malis movet ornatus id vim, feugait detracto est ea, eam eruditi conceptam in. Ne sit explicari interesset. Labores perpetua cum at. Id viris docendi denique vim.</p>
+                                </div>
 
-                            <img src={require('../img/8ball.jpg')} alt='game'/>
-                            <img src={require('../img/chess.jpg')} alt='chess'/>
+                                <img src={require('../img/8ball.jpg')} alt='game'/>
+                                <img src={require('../img/chess.jpg')} alt='chess'/>
+                            </div>
                         </div>
 
                         <div id="slide3" className="slide">
-                            <Grid container spacing={16}>
+                            <div className="container"> 
+                               <Grid container spacing={16}>
                                 <Grid item xs={12} md={6}>
                                     <div className="title-y">
                                         <h1>CREATE ACCOUNT</h1>
@@ -385,19 +388,18 @@ export class Landing extends Component {
 
                                 </Grid>
                             </Grid>
-
+                            </div>
                         </div>
 
                         <div id="slide4" className="slide header">
-                            <a href='/about'>About us</a>
-                            <br/>
-                            <a href='/terms'>Terms & conditions</a>
-                            <br/>
-                            <a href='/faq'>FAQ</a>
-                            <br/>
-                            <a href='/faq'>Contact us</a>
-                            <br/>
-                            <a href='/privacy'>privacy policy</a>
+                        <ul>
+                           <li> <a href='/about'>About us</a></li>
+                            <li> <a href='/terms'>Terms & conditions</a> </li>
+                            <li> <a href='/faq'>FAQ</a> </li>
+                            <li> <a href='/faq'>Contact us</a> </li>
+                            <li><a href='/privacy'>privacy policy</a></li>
+                            <div className="clearr"></div>
+                            </ul>
                         </div>
                     </div>
                 </div>

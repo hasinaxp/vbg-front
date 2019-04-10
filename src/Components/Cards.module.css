@@ -141,49 +141,144 @@ opacity: 1;
 transition: all 0.3s linear;
 }
 
-.gameCard{
+/*.gameCard{
 background-color: #444;
 display: flex;
 flex-direction: column;
 grid-gap: 10px;
 width: 300px;
-height: 240px;
 cursor: pointer;
-box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-}
+}*/
 .gameCard h1 {
-margin: 10px;
 color:#76ff03;
 }
 .gameCard h2 {
-margin: 10px;
-margin-top: -10px;
 color: #aaa;
 }
-.gameCard div:nth-child(1){ 
+/*.gameCard div:nth-child(1){ 
     height:60%; 
     width:100%;
     overflow: hidden;
     position: relative;
-}
+}*/
 .gameCard div img {
-height: 130%;
-margin-left: -2%;
 opacity: 0.8;
-left:0;
-right: 0;
-position: absolute;
-margin:auto;
-top:0;
-bottom:0;
+
+}
+.gameCard:hover {
+box-shadow: 0px 4px 10px #111;
 }
 .gameCard:hover > div img {
 transform: scale(1.1);
 transition: all 0.3s linear;
 opacity:1;
 }
-.gameCard:hover {
-box-shadow: 0px 4px 10px #111;
+
+.priceConsole{font-size:12px; font-weight:normal; color:#bbb;;text-transform: capitalize;font-family: verdana;}
+
+.priceConsole strong{color:white;}
+.firstpart{width:60% !important; float:left;}
+.secondpart{width:40% !important; float:left;}
+.torurmant{
+    margin: 0 auto;
+    padding: 20px 15px;
+    transition: all 0.3s ease-in-out;
+    border-bottom: 1px solid #303030;
+    text-align: center;
+    position: relative;
+    background: #21212d;
 }
+.torurmant .gameitem {
+    width: 33.33%;
+    float: left;
+}
+.torurmant .gameitem.vs {
+    text-align: center;
+}
+.torurmant .gameitem.vs h4 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
+    height: 45px;
+    width: 45px;
+    background: #76ff03;
+    border-radius: 50%;
+    line-height: 47px;
+    margin: 20px auto;
+    position: relative;
+    z-index: 2;
+  }
+  .torurmant .gameitem.vs h4:before {
+    left: -5px;
+    top: -5px;
+    bottom: -5px;
+    right: -5px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+}
+ .torurmant .gameitem.vs h4:after {
+    left: -10px;
+    top: -10px;
+    bottom: -10px;
+    right: -10px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+}
+ .torurmant .gameitem img {
+    height: 70px;
+    width: 70px;
+    border-radius: 5px;
+}
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.torurmantBet{width:100%;padding:0px 20px;}
+.torurmantDes{
+    background: #1a1c20;
+    border-top: 5px solid #76ff03;
+    padding: 20px;
+}
+.torurmantDes h4{
+color: #fff;
+font-size: 18px;
+font-weight: 500;
+line-height: 24px;
+}
+.torurmantDes h5{
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 24px;
+}
+.gameCard{width:100%; overflow: hidden;}
+.gameCard .gameitem{
+    padding: 0 5px;
+}
+.gameCard .gameitem img{ 
+    width: 100%;
+    -ms-transform: skew(-5deg);
+    transform: skew(-5deg);
+    height: 200px;
 
-
+}
+.gameCard .gamename h1{
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 700;
+    margin-bottom: 0;
+    margin-top: 15px;
+    color:#76ff03;
+}
+.gameCard .gamename h2,.gameCard .gamename h4{
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    margin-bottom: 0;
+    margin-top: 5px;
+    color:white;
+}
+.gameCardOn {
+    background: #1a1c20;
+    border-top: 5px solid #73fa02;
+    padding: 20px 10px;
+  }

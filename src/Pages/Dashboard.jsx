@@ -206,8 +206,8 @@ export class Dashboard extends Component {
                         <ExpansionPanelDetails>
                             <Grid container spacing={16}>
                                 {this.state.games.map(game => <GameCard key={game._id} game={game} load={this.load} />)}
-                                <Grid item xs={12}>
-                                    <Button style={{ ...MainStyles.header, width: '100%' }} onClick={this.toggleAddGame}>
+                                <Grid item xs={12} className="CneterButton">
+                                    <Button  className="AddMore" onClick={this.toggleAddGame}>
                                         Add game
                                     </Button>
                                 </Grid>

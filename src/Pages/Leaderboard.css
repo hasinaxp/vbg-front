@@ -1,0 +1,7 @@
+.table { display:table; width:100%; }
+.table-row { display:table-row; }
+.table-cell { display:table-cell; }
+.icon,.rank{width:15%;}
+.playername,.point{width:35%;}
+.table-row:nth-child(even) {background: #7d7d82}
+.clearfix{clear:both;content: ''}

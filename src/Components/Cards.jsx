@@ -51,16 +51,24 @@ export class ChallengeCard extends Component {
         return (
             <React.Fragment>
                 <Grid item container xs={12} md={4} justify='center' alignItems='center' style={{ marginBottom: 8 }}>
-                    <div className={`${styles.bCard} animated bounceInRight`} onClick={this.toggleChallenge}>
-                        <div>
-                            <img src={`${HostAddress}gameimg/${this.state.game.image}`} alt='game'/>
-                            <h1>{this.state.game.name}</h1>
-                            <h2>Bet: {this.state.bet} BP</h2>
-                            <h2>{this.state.opponent.full_name}</h2>
+                    <div className={`${styles.torurmantBet} animated bounceInRight`} onClick={this.toggleChallenge}>
+                        <div  className={`${styles.torurmant} ${styles.clearfix}`} >
+                            <div  className={`${styles.gameitem} `}>
+                                <img src={`${HostAddress}gameimg/${this.state.game.image}`} alt='game'/>
+                                <h4>Me</h4>                
+                            </div>
+                            <div  className={`${styles.gameitem} ${styles.vs}`}>
+                            <h4>Bet</h4>
                         </div>
-                        <div>
-                            <img src={`${HostAddress}${this.state.opponent.image}`} alt='opponent' />
+                            <div  className={`${styles.gameitem} `}>
+                                <img src={`${HostAddress}${this.state.opponent.image}`} alt='opponent' />
+                                <h4>{this.state.opponent.full_name}</h4>
+                            </div>
                         </div>
+                        <div className={`${styles.torurmantDes}`}>
+                             <h4>{this.state.game.name}</h4>
+                             <h5>Bet: {this.state.bet} BP</h5>                              
+                    </div>
                     </div>
                 </Grid>
                 <Dialog open={this.state.isOpen} onClose={this.toggleChallenge}>
@@ -87,20 +95,24 @@ export class MatchCard extends Component {
     render() {
         const { id, bet, game, opponent } = this.props
         return (
-            <Grid item container xs={12} md={4} lg={3} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
-                <div className={`${styles.cCard} animated bounceInLeft`} onClick={this.redirect(id)}>
-                    <div>
-                        <img src={`${HostAddress}gameimg/${game.image}`} />
+            <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
+                <div className={`${styles.torurmantBet} animated bounceInLeft`} onClick={this.redirect(id)}>
+                    <div  className={`${styles.torurmant} ${styles.clearfix}`} >
+                        <div  className={`${styles.gameitem} `}>
+                            <img src={`${HostAddress}gameimg/${game.image}`} />
+                            <h4>Me</h4>
+                        </div>
+                        <div  className={`${styles.gameitem} ${styles.vs}`}>
+                            <h4>Vs</h4>
+                        </div>
+                        <div className={`${styles.gameitem} `}>
+                            <img src={`${HostAddress}${opponent.image}`} />
+                            <h4>{opponent.full_name}</h4>
+                        </div>
                     </div>
-                    <div>
-                        <img src={`${HostAddress}${opponent.image}`} />
-                    </div>
-                    <div>
-                        <h1> VS </h1>
-                        <h2>{opponent.full_name}</h2>
-                        <br />
-                        <h3>{game.name}</h3>
-                        <h3>{bet} BP</h3>
+                    <div className={`${styles.torurmantDes}`}>
+                        <h4>{game.name}</h4>
+                        <h5>BP :- {bet} BP</h5>
                     </div>
                 </div>
             </Grid>
@@ -169,20 +181,31 @@ export class TournamentCard extends Component {
                 <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
                     <div className={styles.gameCard} onClick={this.toggleJoin}>
                         <div>
-                            <img src={(this.props.image && this.props.image!='') ? `${HostAddress}tournamentimg/${this.props.image}`:`${HostAddress}gameimg/${this.props.game.image}`} />
-                        </div>
+                            <img src={(this.props.image && this.props.image!='') ? `${HostAddress}tournamentimg/${this.props.image}`:`${HostAddress}gameimg/${this.props.game.image}`} style={{width: '100%',maxHeight:135,minHeight:135}} />
+                       </div>
+                        <div  className={styles.gameCardOn}>
                         <h1>{this.props.tournament_name || this.props.game.name}  </h1>
-                        <h3>
-                            Console {this.props.game.platform ? 'mobile game ' : 'pc game'}
-                            Slot {this.props.current_available + '/' +this.props.player_count }
+                        
+                        <h3 className={`${styles.priceConsole} ${styles.clearfix}`}>
+                            <div className={styles.firstpart}>
+                             <strong>Console:- </strong>  {this.props.game.platform ? 'mobile game ' : 'pc game'}
+                           </div>
+                           <div className={styles.secondpart}>
+                                     <strong>Slot:- </strong> {this.props.current_available + '/' +this.props.player_count }
+                            </div>
                         </h3>
-                        <h3>
-                            Prize {this.props.prize || ' - '} 
-                            Entry {this.props.entry_fee || 'Free' }
+                        <h3 className={`${styles.priceConsole} ${styles.clearfix}`}>
+                            <div className={styles.firstpart}>
+                                <strong>Prize:- </strong> {this.props.prize || ' - '} 
+                            </div>
+                            <div className={styles.secondpart}>
+                            <strong>Entry:- </strong>  {this.props.entry_fee || 'Free' }
+                            </div>
                         </h3>
                         {/* {custom_fields.map((custom,index) =>
                             <h2 key={custom.field_id}>{custom.label_name} : {custom.field_value }</h2>                        
                         )} */}
+                         </div>
                     </div>
                 </Grid>
                 <Dialog open={this.state.isOpen} onClose={this.toggleJoin}>
@@ -281,14 +304,16 @@ export class GameCard extends Component {
             <React.Fragment>
                 <Grid item container xs={12} md={4} lg={4} justify='center' alignItems='center' style={{ marginBottom: 8 }} >
                     <div className={styles.gameCard} onClick={this.toggleGame}>
-                        <div>
+                        <div className={styles.gameitem}>
                             <img src={`${HostAddress}gameimg/${this.props.game.image}`} />
                         </div>
+                        <div className={styles.gamename}>
                         <h1>{this.props.game.name}</h1>
                         <h2>{this.props.game.platform ? 'mobile game' : 'pc game'}</h2>
                         {this.props.game.contact_string &&
                             <h4> GameId : {this.props.game.contact_string}</h4>
                         }
+                        </div>
                     </div>
                 </Grid>
                 <Dialog open={this.state.isOpen} onClose={this.toggleGame}>
